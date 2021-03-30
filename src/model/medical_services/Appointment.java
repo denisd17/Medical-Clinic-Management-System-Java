@@ -6,7 +6,15 @@ import java.util.Set;
 
 public class Appointment {
     private Date date;
+    private int hour;
     private Set<MedicalS> medicalServices = new HashSet<>();
+    private String patientNumericCode;
+    private String doctorNumericCode;
+    private String nurseNumericCode;
+
+    public Appointment() {
+
+    }
 
     public Appointment(Date date, Set<MedicalS> medicalServices) {
         this.date = date;
@@ -31,6 +39,38 @@ public class Appointment {
 
     public void addMedicalService(MedicalS medicalService) {
         medicalServices.add(medicalService);
+    }
+
+    public String getPatientNumericCode() {
+        return patientNumericCode;
+    }
+
+    public void setPatientNumericCode(String patientNumericCode) {
+        this.patientNumericCode = patientNumericCode;
+    }
+
+    public String getDoctorNumericCode() {
+        return doctorNumericCode;
+    }
+
+    public void setDoctorNumericCode(String doctorNumericCode) {
+        this.doctorNumericCode = doctorNumericCode;
+    }
+
+    public String getNurseNumericCode() {
+        return nurseNumericCode;
+    }
+
+    public void setNurseNumericCode(String nurseNumericCode) {
+        this.nurseNumericCode = nurseNumericCode;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
     }
 
     //TO DO - returns the price of the appointment

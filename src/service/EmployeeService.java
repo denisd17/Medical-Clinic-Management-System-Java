@@ -14,6 +14,47 @@ public class EmployeeService {
     private static ArrayList<Employee> employees = Database.getEmployees();
     private static ArrayList<Consultation> consultations = Database.getConsultations();
 
+    public void menu() {
+        int option = 0;
+        System.out.println("Choose an option.");
+
+        while(option != 6){
+            System.out.println("1. List all the registered employees");
+            System.out.println("2. Search and display employee info");
+            System.out.println("3. Add a new employee");
+            System.out.println("4. Update employee info");
+            System.out.println("5. Remove employee");
+            System.out.println("6. Return to main menu");
+            option = scanner.nextInt();
+            scanner.nextLine();
+
+            switch(option) {
+                case 1:
+                    showEmployees();
+                    break;
+                case 2:
+                    showEmployee();
+                    break;
+                case 3:
+                    addEmployee();
+                    break;
+                case 4:
+                    updateEmployee();
+                    break;
+                case 5:
+                    deleteEmployee();
+                    break;
+                case 6:
+                    break;
+                default:
+                    System.out.println("Invalid option!");
+
+            }
+        }
+
+    }
+
+
     public void addEmployee() {
         int option;
         Employee newEmployee;
@@ -199,6 +240,7 @@ public class EmployeeService {
             Specialization newSpecialization = new Specialization(specializationName);
             specializations.add(newSpecialization);
             Consultation newConsultation = new Consultation(100, 0, newSpecialization);
+            System.out.println(newConsultation);
             consultations.add(newConsultation);
             d.setSpecializare(newSpecialization);
         }
