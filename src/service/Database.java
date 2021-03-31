@@ -18,6 +18,7 @@ public class Database {
     private static ArrayList<Radiography> radiographies = new ArrayList<>();
     private static ArrayList<Test> tests = new ArrayList<>();
 
+
     private Database() {
 
     }

@@ -13,6 +13,7 @@ public class Patient extends Person{
     private Date birthDate;
     private ArrayList<Appointment> appointments = new ArrayList<>();
 
+
     public Patient() {
 
     }
@@ -22,6 +23,12 @@ public class Patient extends Person{
         this.medicalRecord = medicalRecord;
         this.birthDate = birthDate;
         this.appointments = appointments;
+    }
+
+    public Patient(String firstName, String lastName, String phoneNumber, String email, String cnp, MedicalRecord medicalRecord, Date birthDate) {
+        super(firstName, lastName, phoneNumber, email, cnp);
+        this.medicalRecord = medicalRecord;
+        this.birthDate = birthDate;
     }
 
     public MedicalRecord getMedicalRecord() {

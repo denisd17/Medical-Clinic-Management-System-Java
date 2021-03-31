@@ -14,6 +14,8 @@ public class EmployeeService {
     private static ArrayList<Employee> employees = Database.getEmployees();
     private static ArrayList<Consultation> consultations = Database.getConsultations();
 
+
+    //Meniu gestionare anagajati
     public void menu() {
         int option = 0;
         System.out.println("Choose an option.");
@@ -54,7 +56,7 @@ public class EmployeeService {
 
     }
 
-
+    //Adaugare nou angajat
     public void addEmployee() {
         int option;
         Employee newEmployee;
@@ -85,6 +87,7 @@ public class EmployeeService {
         employees.add(newEmployee);
     }
 
+    //Afisare lista angajati
     public void showEmployees() {
         if (!employees.isEmpty()) {
             for(Employee e : employees) {
@@ -97,6 +100,7 @@ public class EmployeeService {
         }
     }
 
+    //Afisare informatii angajat (cautare dupa CNP)
     public void showEmployee() {
         System.out.println("Please enter the employee's CNP: ");
         String cnp = scanner.nextLine();
@@ -110,27 +114,120 @@ public class EmployeeService {
         }
     }
 
+
+    //Actualizare informatii angajat
     public void updateEmployee() {
+        System.out.println("Enter the employee numeric code: ");
+        String cnp = scanner.nextLine();
+        Employee e = searchEmployee(cnp);
+        int option = 0;
+
+        if(e == null){
+            System.out.println("There is no employee with the provided numeric code");
+        }
+        else {
+            while(option != 7) {
+                System.out.println("What do you wish to update?");
+                System.out.println("1. First name");
+                System.out.println("2. Last name");
+                System.out.println("3. Phone number");
+                System.out.println("4. Numeric code");
+                System.out.println("5. Schedule");
+                if(e instanceof Doctor) {
+                    System.out.println("6. Specialization");
+                    System.out.println("7. Exit");
+                }
+                else {
+                    System.out.println("6. Exit");
+                }
+                option = scanner.nextInt();
+                scanner.nextLine();
+
+                switch(option) {
+                    case 1:
+                        enterFirstName(e);
+                        break;
+                    case 2:
+                        enterLastName(e);
+                        break;
+                    case 3:
+                        enterPhoneNumber(e);
+                        break;
+                    case 4:
+                        enterCnp(e);
+                        break;
+                    case 5:
+                        enterSchedule(e);
+                    case 6:
+                        if(e instanceof Doctor) {
+                            Specialization empSpec = ((Doctor) e).getSpecializare();
+                            enterSpecialization(e);
+                            updateSpecializationAndService(empSpec);
+                        }
+                        else{
+                            option = 7;
+                        }
+                    case 7:
+                        break;
+                    default:
+                        System.out.println("Invalid option!");
+                }
+            }
+        }
 
     }
 
-    //TO DO: ANULARE A TUTUROR PROGRAMARILOR PENTRU ACEL ANGAJAT
-    //DACA NU MAI EXISTA DOCTORI CU ACEA SPECIALIZARE, STERGEREA SPECIALIZARII
-    //HASHCODE SI EQUALS
+    //Stergere angajat
+    //TO DO: La stergere angajat, anulare a tuturor programarilor (dupa implementare programari)
     public void deleteEmployee() {
         System.out.println("Please enter the employee's CNP: ");
         String cnp = scanner.nextLine();
         Employee employeeToBeDeleted = searchEmployee(cnp);
+        Specialization empSpec = null;
+
 
         if(employeeToBeDeleted == null) {
             System.out.println("There is no employee with the CNP: " + cnp);
         }
         else {
+            if(employeeToBeDeleted instanceof Doctor){
+                empSpec = ((Doctor) employeeToBeDeleted).getSpecializare();
+            }
             employees.remove(employeeToBeDeleted);
+
+            //Stergerea consultatiei aferente din lista de servicii,
+            //in cazul in care nu mai exista nici un alt doctor cu aceeasi specializare
+            updateSpecializationAndService(empSpec);
+
             System.out.println("The employee has been deleted.");
         }
     }
 
+    //Functie utilizata in cazul updatarii / stergerii unui angajat de tip doctor
+    //In cazul in care nu mai exista nici un alt doctor cu acea specializare
+    //Va fi stearsa consultatia aferenta, precum si specializarea din lista de specializari
+    //TO DO: Actualizare programari (dupa implementare programari)
+    private void updateSpecializationAndService(Specialization s){
+        boolean gasit = false;
+
+        for(int i = 0; i < employees.size() && !gasit; i++){
+            if(employees.get(i) instanceof Doctor) {
+                if(s.equals(((Doctor) employees.get(i)).getSpecializare()))
+                    gasit = true;
+            }
+        }
+
+        if(!gasit) {
+            for(int i = 0; i < consultations.size(); i++) {
+                if(consultations.get(i).getSpecialization().equals(s)){
+                    consultations.remove(consultations.get(i));
+                    break;
+                }
+            }
+            specializations.remove(s);
+        }
+    }
+    //Cautare angajat dupa CNP
     private Employee searchEmployee(String cnp) {
         if (!employees.isEmpty()) {
             for(Employee e : employees) {
@@ -142,36 +239,43 @@ public class EmployeeService {
         return null;
     }
 
+    //Functii utilizate pentru creare / updatare angajat
+    //Prenume
     private void enterFirstName(Employee e) {
         System.out.print("Employee's first name: ");
         String fName = scanner.nextLine();
         e.setFirstName(fName);
     }
 
+    //Nume
     private void enterLastName(Employee e) {
         System.out.print("Employee's last name: ");
         String lName = scanner.nextLine();
         e.setLastName(lName);
     }
 
+    //Numar de telefon
     private void enterPhoneNumber(Employee e) {
         System.out.print("Employee's phone number: ");
         String pNumber = scanner.nextLine();
         e.setPhoneNumber(pNumber);
     }
 
+    //Email
     private void enterEmail(Employee e) {
         System.out.print("Employee's email: ");
         String pEmail = scanner.nextLine();
         e.setEmail(pEmail);
     }
 
+    //CNP
     private void enterCnp(Employee e) {
         System.out.print("Employee's CNP: ");
         String pCnp = scanner.nextLine();
         e.setCnp(pCnp);
     }
 
+    //Program de lucru
     private void enterSchedule(Employee e) {
         WorkDay schedule[] = new WorkDay[5];
         for(int i = 0; i < 5; i++) {
@@ -198,11 +302,13 @@ public class EmployeeService {
             int startHour;
             int endHour;
             int index = Character.getNumericValue(c) - 1;
-            System.out.println(index);
+            //System.out.println(index);
             System.out.print("Enter the schedule for ");
             System.out.println(weekDays[index]);
 
+            System.out.println("Starting hour: ");
             startHour = scanner.nextInt();
+            System.out.println("End hour: ");
             endHour = scanner.nextInt();
             scanner.nextLine();
 
@@ -214,6 +320,7 @@ public class EmployeeService {
         e.setSchedule(schedule);
     }
 
+    //Specializare doctor
     private void enterSpecialization(Employee e) {
         Doctor d = (Doctor) e;
         int option;
@@ -239,8 +346,8 @@ public class EmployeeService {
             String specializationName = scanner.nextLine();
             Specialization newSpecialization = new Specialization(specializationName);
             specializations.add(newSpecialization);
-            Consultation newConsultation = new Consultation(100, 0, newSpecialization);
-            System.out.println(newConsultation);
+            Consultation newConsultation = new Consultation(100, newSpecialization);
+            //System.out.println(newConsultation);
             consultations.add(newConsultation);
             d.setSpecializare(newSpecialization);
         }
@@ -249,12 +356,3 @@ public class EmployeeService {
         }
     }
 }
-
-/*
-
-
-
-
-
-
-* */

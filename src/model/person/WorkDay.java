@@ -4,6 +4,7 @@ public class WorkDay {
     private int startHour;
     private int endHour;
 
+
     public WorkDay() {
         startHour = 0;
         endHour = 0;

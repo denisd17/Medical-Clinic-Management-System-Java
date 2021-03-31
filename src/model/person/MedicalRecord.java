@@ -9,6 +9,7 @@ public class MedicalRecord {
     Set<String> alergies = new HashSet<>();
     Set<String> chronicDiseases = new HashSet<>();
 
+
     public MedicalRecord() {
     }
 

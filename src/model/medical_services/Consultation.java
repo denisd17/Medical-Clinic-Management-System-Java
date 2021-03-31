@@ -2,11 +2,13 @@ package model.medical_services;
 
 import model.person.Specialization;
 
+import java.util.Objects;
+
 public class Consultation extends MedicalS{
     Specialization specialization;
 
-    public Consultation(float price, int duration, Specialization specialization) {
-        super(price, duration);
+    public Consultation(float price, Specialization specialization) {
+        super(price);
         this.specialization = specialization;
     }
 
@@ -21,5 +23,25 @@ public class Consultation extends MedicalS{
     @Override
     public String toString() {
         return specialization.toString() + " Consultation\n" + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        Consultation that = (Consultation) o;
+        return specialization.equals(that.specialization);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), specialization);
     }
 }

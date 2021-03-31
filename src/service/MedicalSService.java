@@ -11,8 +11,10 @@ public class MedicalSService {
     private static ArrayList<Test> tests = Database.getTests();
     private static ArrayList<Consultation> consultations = Database.getConsultations();
     private Scanner scanner = new Scanner(System.in);
+    //Utilizat pentru generarea aleatoare a listei de servicii, va fi scos in etapa urmatoare
     private Random rand = new Random();
 
+    //Meniu optiuni servicii medicale
     public void menu() {
         int option = 0;
         System.out.println("Choose an option.");
@@ -41,7 +43,6 @@ public class MedicalSService {
 
     }
 
-
     //Metoda ce este folosita pentru a genera lista de servicii oferite de clinica medicala
     //Aceasta metoda va fi folosita doar pentru etapa 1 a proiectului
     //In urmatoarele etape voi incarca lista serviciilor direct din CSV / Baza de date
@@ -51,6 +52,7 @@ public class MedicalSService {
         generateRadiographies();
     }
 
+    //Metode helper pentru generateServicesList
     private void generateTests() {
         for(TestType t : TestType.values()){
             Test newTest = new Test();
@@ -72,6 +74,7 @@ public class MedicalSService {
 
     }
 
+    //Afisare lista servicii
     public void showServices() {
         System.out.println("The clinic offers the following services:");
         System.out.println("Consultations");
@@ -84,6 +87,7 @@ public class MedicalSService {
         showTests();
     }
 
+    //Afisare investigatii(teste) oferite
     public void showTests() {
         for (int i = 0; i < tests.size(); i++){
             System.out.println("-------------------");
@@ -94,6 +98,7 @@ public class MedicalSService {
 
     }
 
+    //Afisare radiografii oferite
     public void showRadiographies() {
         for (int i = 0; i < radiographies.size(); i++){
             System.out.println("-------------------");
@@ -104,6 +109,7 @@ public class MedicalSService {
 
     }
 
+    //Afisare consultatii oferite
     public void showConsultations() {
         for (int i = 0; i < consultations.size(); i++){
             System.out.println("-------------------");
@@ -114,6 +120,7 @@ public class MedicalSService {
 
     }
 
+    //Actualizare pret serviciu
     public void updateServicePrice() {
         System.out.println("Select the category:");
         System.out.println("1. Consultations");
@@ -146,6 +153,7 @@ public class MedicalSService {
         }
     }
 
+    //Helper pentru updateServicePrice
     private void updatePriceOfService(MedicalS s){
         System.out.println("Enter the new price: ");
         int price = scanner.nextInt();

@@ -1,16 +1,17 @@
 package model.medical_services;
 
+import java.util.Objects;
+
 public abstract class MedicalS {
     private float price;
-    private int duration;
+
 
     public MedicalS() {
 
     }
 
-    public MedicalS(float price, int duration) {
+    public MedicalS(float price) {
         this.price = price;
-        this.duration = duration;
     }
 
     public float getPrice() {
@@ -21,16 +22,25 @@ public abstract class MedicalS {
         this.price = price;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
     @Override
     public String toString() {
         return "price = " + price + " RON\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MedicalS medicalS = (MedicalS) o;
+        return Float.compare(medicalS.price, price) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price);
     }
 }

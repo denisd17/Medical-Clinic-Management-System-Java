@@ -12,6 +12,7 @@ public class Appointment {
     private String doctorNumericCode;
     private String nurseNumericCode;
 
+
     public Appointment() {
 
     }
@@ -73,7 +74,7 @@ public class Appointment {
         this.hour = hour;
     }
 
-    //TO DO - returns the price of the appointment
+    //TO DO: returns the price of the appointment
     public float calculateAppointmentPrice() {
         return 0;
     }

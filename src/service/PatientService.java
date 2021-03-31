@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class PatientService {
-    //TO DO: FIX THE SCANNER PROBLEM
     private Scanner scanner = new Scanner(System.in);
     private static ArrayList<Patient> patients = Database.getPatients();
     private static ArrayList<Consultation> consultations = Database.getConsultations();
@@ -20,6 +19,7 @@ public class PatientService {
     private static ArrayList<Employee> employees = Database.getEmployees();
     private static ArrayList<Test> tests = Database.getTests();
 
+    //Meniu gestionare pacienti
     public void menu() {
         int option = 0;
         System.out.println("Choose an option.");
@@ -65,9 +65,8 @@ public class PatientService {
 
     }
 
-    //TO DO: FIGURE OUT HOW SCANNER REALLY WORKS (CLEARING BUFFER)
-    //TO DO: TREAT PARSE EXCEPTION
-    //TO DO: MOVE READING INPUT IN PRIVATE FUNCTIONS THAT TREAT EXCEPTIONS
+    //TO DO: Mutare citire detalii in functii helper, asemanator cu EmployeeService
+    //Adaugare pacient nou
     public void addPatient(){
         Patient newPatient = new Patient();
 
@@ -119,6 +118,8 @@ public class PatientService {
             option = scanner.next().charAt(0);
             scanner.nextLine();
             if (option == 'Y') {
+                System.out.println("Enter each alergy one by one (press enter after each one).");
+                System.out.println("When finished, press enter again.");
                 String alergy = scanner.nextLine();
 
                 while (!alergy.equals("")) {
@@ -131,6 +132,8 @@ public class PatientService {
             option = scanner.next().charAt(0);
             scanner.nextLine();
             if (option == 'Y') {
+                System.out.println("Enter each disease one by one (press enter after each one).");
+                System.out.println("When finished, press enter again.");
                 String disease = scanner.nextLine();
 
                 while (!disease.equals("")) {
@@ -143,7 +146,8 @@ public class PatientService {
 
         patients.add(newPatient);
     }
-    //DONE
+
+    //Afisare lista pacienti
     public void showPatients() {
         if (!patients.isEmpty()) {
             for(Patient p : patients) {
@@ -156,7 +160,7 @@ public class PatientService {
         }
     }
 
-    //DONE
+    //Afisare pacient (cautare dupa CNP)
     public void showPatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
@@ -170,8 +174,8 @@ public class PatientService {
         }
     }
 
-    //TO DO: MOVE READING INPUT IN PRIVATE FUNCTIONS THAT TREAT EXCEPTIONS, SHARED WITH ADDPATIENT
-    //TO DO: UPDATING MEDICAL RECORDS
+    //TO DO: Actualizare fisa medicala
+    //Actualizare informatii pacient
     public void updatePatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
@@ -242,7 +246,7 @@ public class PatientService {
         }
     }
 
-    //DONE
+    //Stergere pacient
     public void deletePatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
@@ -256,6 +260,21 @@ public class PatientService {
             System.out.println("The patient has been deleted.");
         }
     }
+
+    //Cautare pacient dupa CNP (metoda helper)
+    private Patient searchPatient(String cnp) {
+        if (!patients.isEmpty()) {
+            for(Patient p : patients) {
+                if(p.getCnp().equals(cnp)) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    //TO DO: Adaugare programare
     /*
     public void addAppointment() {
         Appointment newAppointment = new Appointment();
@@ -356,19 +375,7 @@ public class PatientService {
 
 
     }
-    */
-    //DONE
-    private Patient searchPatient(String cnp) {
-        if (!patients.isEmpty()) {
-            for(Patient p : patients) {
-                if(p.getCnp().equals(cnp)) {
-                    return p;
-                }
-            }
-        }
-        return null;
-    }
-    /*
+
     private void determineAppointmentHour(Specialization spec, boolean consultation, boolean investigation, Date appDate, int day) {
         int hour = 0;
         boolean found = false;
@@ -480,7 +487,4 @@ public class PatientService {
     }
 
      */
-
-
-
 }

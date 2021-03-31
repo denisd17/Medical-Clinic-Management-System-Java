@@ -1,5 +1,7 @@
 package model.medical_services;
 
+import java.util.Objects;
+
 public class Test extends MedicalS{
     private TestType type;
 
@@ -12,8 +14,6 @@ public class Test extends MedicalS{
         this.type = type;
     }
 
-
-
     public TestType getType() {
         return type;
     }
@@ -25,5 +25,25 @@ public class Test extends MedicalS{
     @Override
     public String toString() {
         return type.name() + "Test\n" + super.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        Test test = (Test) o;
+        return type == test.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), type);
     }
 }
