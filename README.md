@@ -1,4 +1,4 @@
-# Sistem de management al unei clinici medicale
+# Sistem de gestiune al unei clinici medicale
 
 ## Obiecte principale
 
