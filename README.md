@@ -72,5 +72,7 @@ Contine:
 - creare / stergere / editare detalii / afisare lista / cautare si afisare unul singur pentru Pacienti
 - creare / stergere / editare detalii / afisare lista / cautare si afisare unul singur pentru Angajati
 - afisare / afisare sortata (crescator | descrescator) dupa pret / editare detalii pentru Servicii medicale
-- adaugare programare (work in progress)
-- sortare pacienti dupa suma cheltuita in cadrul clinicii (work in progress)
+- adaugare programare:
+  se vor selecta serviciile medicale precum si data, dupa care sistemul va cauta o ora libera din ziua respectiva,
+   pentru a programa pacientul.
+- sortare pacienti dupa suma cheltuita in cadrul clinicii (crescator | descrescator)
