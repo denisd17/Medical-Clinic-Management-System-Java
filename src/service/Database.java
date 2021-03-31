@@ -1,11 +1,10 @@
 package service;
 
+import model.medical_services.Appointment;
 import model.medical_services.Consultation;
 import model.medical_services.Radiography;
 import model.medical_services.Test;
-import model.person.Employee;
-import model.person.Patient;
-import model.person.Specialization;
+import model.person.*;
 
 import java.util.ArrayList;
 
@@ -52,5 +51,38 @@ public class Database {
 
     public static ArrayList<Specialization> getSpecializations() {
         return specializations;
+    }
+
+    // Stergerea unei programari
+    public static void deleteAppointment(Appointment a) {
+        String patientNumeric = a.getPatientNumericCode();
+        String doctorNumeric = a.getDoctorNumericCode();
+        String nurseNumeric = a.getNurseNumericCode();
+
+        for (Patient p : patients) {
+            if(p.getCnp().equals(patientNumeric)) {
+                p.getAppointments().remove(a);
+                break;
+            }
+        }
+
+        if(doctorNumeric != null) {
+            for (Employee d : employees) {
+                if(d.getCnp().equals(patientNumeric)) {
+                    d.getAppointments().remove(a);
+                    break;
+                }
+            }
+        }
+
+        if(nurseNumeric != null) {
+            for (Employee n : employees) {
+                if(n.getCnp().equals(patientNumeric)) {
+                    n.getAppointments().remove(a);
+                    break;
+                }
+            }
+        }
+
     }
 }

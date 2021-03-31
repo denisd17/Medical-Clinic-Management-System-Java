@@ -1,10 +1,6 @@
 package service;
 
-import jdk.swing.interop.SwingInterOpUtils;
-import model.medical_services.Appointment;
-import model.medical_services.Consultation;
-import model.medical_services.Radiography;
-import model.medical_services.Test;
+import model.medical_services.*;
 import model.person.*;
 
 import java.text.ParseException;
@@ -24,15 +20,16 @@ public class PatientService {
         int option = 0;
         System.out.println("Choose an option.");
 
-        while(option != 8){
+        while(option != 9){
             System.out.println("1. List all the registered patients");
-            System.out.println("2. Search and display patient info");
-            System.out.println("3. Display patient appointments");
-            System.out.println("4. Add a new patient");
-            System.out.println("5. Update patient info");
-            System.out.println("6. Remove patient");
-            System.out.println("7. Schedule a new appointment");
-            System.out.println("8. Return to main menu");
+            System.out.println("2. List patients ordered by total money spent");
+            System.out.println("3. Search and display patient info");
+            System.out.println("4. Display patient appointments");
+            System.out.println("5. Add a new patient");
+            System.out.println("6. Update patient info");
+            System.out.println("7. Remove patient");
+            System.out.println("8. Schedule a new appointment");
+            System.out.println("9. Return to main menu");
             option = scanner.nextInt();
             scanner.nextLine();
 
@@ -41,24 +38,30 @@ public class PatientService {
                     showPatients();
                     break;
                 case 2:
-                    showPatient();
+                    System.out.println("Ascending or descending (0/1)");
+                    int sortOption = scanner.nextInt();
+                    scanner.nextLine();
+                    showTopPatients(sortOption);
                     break;
                 case 3:
-                    showPatientAppointments();
+                    showPatient();
                     break;
                 case 4:
-                    addPatient();
+                    showPatientAppointments();
                     break;
                 case 5:
-                    updatePatient();
+                    addPatient();
                     break;
                 case 6:
-                    deletePatient();
+                    updatePatient();
                     break;
                 case 7:
-                    schedulePatientAppointment();
+                    deletePatient();
                     break;
                 case 8:
+                    schedulePatientAppointment();
+                    break;
+                case 9:
                     break;
                 default:
                     System.out.println("Invalid option!");
@@ -70,7 +73,7 @@ public class PatientService {
 
     //TO DO: Mutare citire detalii in functii helper, asemanator cu EmployeeService
     //Adaugare pacient nou
-    public void addPatient(){
+    private void addPatient(){
         Patient newPatient = new Patient();
 
         System.out.println("Patient's first name: ");
@@ -151,7 +154,7 @@ public class PatientService {
     }
 
     //Afisare lista pacienti
-    public void showPatients() {
+    private void showPatients() {
         if (!patients.isEmpty()) {
             for(Patient p : patients) {
                 System.out.println("--------------------");
@@ -164,7 +167,7 @@ public class PatientService {
     }
 
     //Afisare pacient (cautare dupa CNP)
-    public void showPatient() {
+    private void showPatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
         Patient patientToBeShown = searchPatient(cnp);
@@ -177,8 +180,39 @@ public class PatientService {
         }
     }
 
+    private void showTopPatients(int sort) {
+        ArrayList<Patient> sortedPatients = Database.getPatients();
+
+        if(sortedPatients.isEmpty()) {
+            System.out.println("There are no registered patients!");
+        }
+        else {
+            sortedPatients.sort(new SpendingsSorter());
+
+            if(sort == 1){
+                Collections.reverse(sortedPatients);
+            }
+
+            System.out.print("Patients sorted by total spendings ");
+            if(sort == 1){
+                System.out.println("[ASCENDING]");
+            }
+            else {
+                System.out.println("[DESCENDING]");
+            }
+
+            for(Patient p : sortedPatients){
+                System.out.println("--------------------");
+                System.out.print(p);
+                System.out.print("Total spendings: ");
+                System.out.print(p.getTotalSpent());
+                System.out.println("RON");
+            }
+        }
+    }
+
     //Actualizare informatii pacient
-    public void updatePatient() {
+    private void updatePatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
         Patient patientToBeUpdated = searchPatient(cnp);
@@ -249,7 +283,7 @@ public class PatientService {
     }
 
     //Stergere pacient
-    public void deletePatient() {
+    private void deletePatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
         Patient patientToBeDeleted = searchPatient(cnp);
@@ -258,6 +292,13 @@ public class PatientService {
             System.out.println("There is no patient with the cnp: " + cnp);
         }
         else {
+            // Stergerea programarilor aferente
+            Iterator<Appointment> it = patientToBeDeleted.getAppointments().iterator();
+            while (it.hasNext()) {
+                Appointment a = it.next();
+                it.remove();
+                Database.deleteAppointment(a);
+            }
             patients.remove(patientToBeDeleted);
             System.out.println("The patient has been deleted.");
         }
@@ -301,10 +342,16 @@ public class PatientService {
         Patient p = null;
         String cnp;
 
-        while(p == null) {
-            System.out.println("Enter the patient's numeric code");
-            cnp = scanner.nextLine();
-            p = searchPatient(cnp);
+
+        System.out.println("Enter the patient's numeric code");
+        cnp = scanner.nextLine();
+        p = searchPatient(cnp);
+
+        if(p == null) {
+            System.out.print("There is no patient with the numeric code ");
+            System.out.println(cnp);
+        }
+        else {
             ArrayList<Appointment> patientAppointments = p.getAppointments();
 
             if(patientAppointments.isEmpty()) {
@@ -318,11 +365,9 @@ public class PatientService {
                 System.out.println();
             }
         }
-
     }
-    //TO DO: Adaugare programare
 
-    public void addAppointment(Patient p) {
+    private void addAppointment(Patient p) {
         Appointment newAppointment = new Appointment();
         newAppointment.setPatientNumericCode(p.getCnp());
         boolean consultation = false;
@@ -357,6 +402,7 @@ public class PatientService {
                         System.out.println("Choose the type of consultation:");
                         for(int i = 0; i < consultations.size(); i++){
                             System.out.print(i+1);
+                            System.out.print(" ");
                             System.out.println(consultations.get(i));
                         }
 
@@ -375,6 +421,7 @@ public class PatientService {
                     System.out.println("Choose the type of test:");
                     for(int i = 0; i < tests.size(); i++){
                         System.out.print(i+1);
+                        System.out.print(" ");
                         System.out.println(tests.get(i));
                     }
 
@@ -388,6 +435,7 @@ public class PatientService {
                     System.out.println("Choose the type of radiography:");
                     for(int i = 0; i < radiographies.size(); i++){
                         System.out.print(i+1);
+                        System.out.print(" ");
                         System.out.println(radiographies.get(i));
                     }
 
@@ -430,7 +478,7 @@ public class PatientService {
                 newAppointment.setDate(appointmentDate);
                 p.addAppointment(newAppointment);
                 System.out.println("Appointment scheduled successfully!");
-                System.out.println(newAppointment.getHour());
+                //System.out.println(newAppointment.getHour());
                 scheduled = true;
             }
             else {
@@ -560,9 +608,7 @@ public class PatientService {
 
                     return 0;
                 }
-
             }
-
         }
         //Cazul 3: Pacientul doreste doar investigatii medicale
         else {
@@ -614,8 +660,6 @@ public class PatientService {
             }
         }
 
-        if(doctors.isEmpty())
-            return null;
         return doctors;
     }
 
@@ -631,9 +675,6 @@ public class PatientService {
                 }
             }
         }
-
-        if(nurses.isEmpty())
-            return null;
 
         return nurses;
     }

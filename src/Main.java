@@ -1,3 +1,4 @@
+import model.medical_services.Appointment;
 import model.medical_services.Consultation;
 import model.medical_services.MedicalS;
 import model.person.*;

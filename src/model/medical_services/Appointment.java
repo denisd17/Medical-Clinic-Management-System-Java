@@ -90,7 +90,8 @@ public class Appointment {
     public String toString() {
         StringBuilder result = new StringBuilder();
         SimpleDateFormat dateFormat = new SimpleDateFormat("E dd/MM/yyyy");
-        result.append("Appointment on: ").append(dateFormat.format(date));
+        result.append("Appointment on: ").append(dateFormat.format(date)).append("\n");
+        result.append("Appointment hour: ").append(hour).append(":00\n");
 
         result.append("The following services are included:\n");
 
@@ -98,7 +99,7 @@ public class Appointment {
             result.append(s.toString());
         }
 
-        result.append("\nTotal price: ").append(calculateAppointmentPrice()).append("\n");
+        result.append("\nTotal price: ").append(calculateAppointmentPrice()).append(" RON\n");
         return result.toString();
     }
 }

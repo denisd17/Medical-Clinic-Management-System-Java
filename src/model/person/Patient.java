@@ -59,6 +59,17 @@ public class Patient extends Person{
         appointments.add(a);
     }
 
+    public float getTotalSpent() {
+        float total = 0;
+
+
+        for(Appointment a : appointments) {
+            total += a.calculateAppointmentPrice();
+        }
+
+        return total;
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();

@@ -1,5 +1,6 @@
 package service;
 
+import model.medical_services.Appointment;
 import model.medical_services.Consultation;
 import model.medical_services.MedicalS;
 import model.person.*;
@@ -116,6 +117,7 @@ public class EmployeeService {
 
 
     //Actualizare informatii angajat
+    //TO DO: Actualizare fisa medicala
     public void updateEmployee() {
         System.out.println("Enter the employee numeric code: ");
         String cnp = scanner.nextLine();
@@ -193,6 +195,15 @@ public class EmployeeService {
             if(employeeToBeDeleted instanceof Doctor){
                 empSpec = ((Doctor) employeeToBeDeleted).getSpecializare();
             }
+
+            // Stergerea programarilor aferente
+            Iterator<Appointment> it = employeeToBeDeleted.getAppointments().iterator();
+            while (it.hasNext()) {
+                Appointment a = it.next();
+                it.remove();
+                Database.deleteAppointment(a);
+            }
+
             employees.remove(employeeToBeDeleted);
 
             //Stergerea consultatiei aferente din lista de servicii,

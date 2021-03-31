@@ -48,7 +48,6 @@ public class MedicalSService {
 
             }
         }
-
     }
 
     //Metoda ce este folosita pentru a genera lista de servicii oferite de clinica medicala
@@ -83,7 +82,7 @@ public class MedicalSService {
     }
 
     //Afisare lista servicii
-    public void showServices() {
+    private void showServices() {
         System.out.println("The clinic offers the following services:");
         System.out.println("Consultations");
         showConsultations();
@@ -96,40 +95,37 @@ public class MedicalSService {
     }
 
     //Afisare investigatii(teste) oferite
-    public void showTests() {
+    private void showTests() {
         for (int i = 0; i < tests.size(); i++){
             System.out.println("-------------------");
             System.out.print(i+1);
             System.out.print(". ");
             System.out.println(tests.get(i));
         }
-
     }
 
     //Afisare radiografii oferite
-    public void showRadiographies() {
+    private void showRadiographies() {
         for (int i = 0; i < radiographies.size(); i++){
             System.out.println("-------------------");
             System.out.print(i+1);
             System.out.print(". ");
             System.out.println(radiographies.get(i));
         }
-
     }
 
     //Afisare consultatii oferite
-    public void showConsultations() {
+    private void showConsultations() {
         for (int i = 0; i < consultations.size(); i++){
             System.out.println("-------------------");
             System.out.print(i+1);
             System.out.print(". ");
             System.out.println(consultations.get(i));
         }
-
     }
 
     //Actualizare pret serviciu
-    public void updateServicePrice() {
+    private void updateServicePrice() {
         System.out.println("Select the category:");
         System.out.println("1. Consultations");
         System.out.println("2. Radiographies");
@@ -161,7 +157,7 @@ public class MedicalSService {
         }
     }
 
-    public void showSortedServices(int sort) {
+    private void showSortedServices(int sort) {
         ArrayList<MedicalS> medicalServices = new ArrayList<>();
 
         for(Consultation c : consultations){
@@ -181,18 +177,17 @@ public class MedicalSService {
             Collections.reverse(medicalServices);
         }
 
-        System.out.print("Servicii medicale sortate ");
+        System.out.print("Medical services sorted by price ");
         if(sort == 1){
-            System.out.println("descrescator");
+            System.out.println("[DESCENDING]");
         }
         else {
-            System.out.println("crescator");
+            System.out.println("[ASCENDING]");
         }
 
         for(MedicalS s : medicalServices){
             System.out.println(s);
         }
-
     }
 
     //Helper pentru updateServicePrice
