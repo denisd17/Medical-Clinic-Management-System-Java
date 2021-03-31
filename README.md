@@ -55,19 +55,16 @@ Contine:
 
 ### Consultation
 Extinde clasa MedicalS
-Consultatie
 Contine:
 - specializare doctor
 
 ### Radiography
 Extinde clasa MedicalS
-Radiografie
 Contine:
 - zona radiografie (Enum RadiographyArea)
 
 ### Test
 Extinde clasa MedicalS
-Investigatie
 Contine:
 - tip investigatie (Enum TestType)
 
@@ -76,3 +73,4 @@ Contine:
 - creare / stergere / editare detalii / afisare lista / cautare si afisare unul singur pentru Angajati
 - afisare / afisare sortata (crescator | descrescator) dupa pret / editare detalii pentru Servicii medicale
 - adaugare programare (work in progress)
+- sortare pacienti dupa suma cheltuita in cadrul clinicii (work in progress)
