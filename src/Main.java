@@ -16,6 +16,7 @@ public class Main {
         MedicalSService m = new MedicalSService();
         int option = 0;
 
+
         //Aceasta sectiune va fi scoasa in urmatoarea etapa a proiectului
         //Vor fi adaugati in "baza de date" cativa pacienti, doctori, asistente si va fi generata si o lista de servicii medicale
         //----------GENERARE DATE INITIALE PROIECT----------//
@@ -81,7 +82,7 @@ public class Main {
         //----------GENERARE SERVICII MEDICALE (RADIOGRAFII / INVESTIGATII (TESTE)
         m.generateServicesList();
         //------------------------------
-
+        //p.addAppointment();
 
         while(option != 4) {
             System.out.println("Choose an action");

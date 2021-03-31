@@ -1,5 +1,6 @@
 package model.medical_services;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -76,6 +77,28 @@ public class Appointment {
 
     //TO DO: returns the price of the appointment
     public float calculateAppointmentPrice() {
-        return 0;
+        float price = 0;
+
+        for (MedicalS s : medicalServices){
+            price += s.getPrice();
+        }
+
+        return price;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("E dd/MM/yyyy");
+        result.append("Appointment on: ").append(dateFormat.format(date));
+
+        result.append("The following services are included:\n");
+
+        for(MedicalS s : medicalServices) {
+            result.append(s.toString());
+        }
+
+        result.append("\nTotal price: ").append(calculateAppointmentPrice()).append("\n");
+        return result.toString();
     }
 }

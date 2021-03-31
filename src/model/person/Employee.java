@@ -42,6 +42,10 @@ public class Employee extends Person {
         this.appointments = appointments;
     }
 
+    public void addAppointment(Appointment a){
+        appointments.add(a);
+    }
+
     @Override
     public String toString() {
         return super.toString();

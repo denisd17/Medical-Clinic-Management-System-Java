@@ -55,6 +55,10 @@ public class Patient extends Person{
         this.appointments = appointments;
     }
 
+    public void addAppointment(Appointment a) {
+        appointments.add(a);
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
