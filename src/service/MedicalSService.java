@@ -3,6 +3,7 @@ package service;
 import model.medical_services.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -17,12 +18,14 @@ public class MedicalSService {
     //Meniu optiuni servicii medicale
     public void menu() {
         int option = 0;
+        int sort = 0;
         System.out.println("Choose an option.");
 
-        while(option != 3){
+        while(option != 4){
             System.out.println("1. List all the services");
             System.out.println("2. Update service price");
-            System.out.println("3. Return to main menu");
+            System.out.println("3. List services (ascending/descending)");
+            System.out.println("4. Return to main menu");
             option = scanner.nextInt();
             scanner.nextLine();
 
@@ -34,6 +37,11 @@ public class MedicalSService {
                     updateServicePrice();
                     break;
                 case 3:
+                    System.out.println("Ascending or Descending? (0/1)");
+                    sort = scanner.nextInt();
+                    scanner.nextLine();
+                    showSortedServices(sort);
+                case 4:
                     break;
                 default:
                     System.out.println("Invalid option!");
@@ -151,6 +159,40 @@ public class MedicalSService {
                 updatePriceOfService(tests.get(option));
                 break;
         }
+    }
+
+    public void showSortedServices(int sort) {
+        ArrayList<MedicalS> medicalServices = new ArrayList<>();
+
+        for(Consultation c : consultations){
+            medicalServices.add(c);
+        }
+
+        for(Test t : tests){
+            medicalServices.add(t);
+        }
+
+        for(Radiography r : radiographies){
+            medicalServices.add(r);
+        }
+        medicalServices.sort(new PriceSorter());
+
+        if(sort == 1){
+            Collections.reverse(medicalServices);
+        }
+
+        System.out.print("Servicii medicale sortate ");
+        if(sort == 1){
+            System.out.println("descrescator");
+        }
+        else {
+            System.out.println("crescator");
+        }
+
+        for(MedicalS s : medicalServices){
+            System.out.println(s);
+        }
+
     }
 
     //Helper pentru updateServicePrice
