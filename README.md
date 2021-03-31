@@ -54,16 +54,19 @@ Contine:
 - pret
 
 ### Consultation
+Extinde clasa MedicalS
 Consultatie
 Contine:
 - specializare doctor
 
 ### Radiography
+Extinde clasa MedicalS
 Radiografie
 Contine:
 - zona radiografie (Enum RadiographyArea)
 
 ### Test
+Extinde clasa MedicalS
 Investigatie
 Contine:
 - tip investigatie (Enum TestType)
