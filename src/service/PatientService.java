@@ -177,7 +177,6 @@ public class PatientService {
         }
     }
 
-    //TO DO: Actualizare fisa medicala
     //Actualizare informatii pacient
     public void updatePatient() {
         System.out.println("Please enter the patient's CNP: ");
