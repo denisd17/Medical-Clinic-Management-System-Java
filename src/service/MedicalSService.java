@@ -35,6 +35,8 @@ public class MedicalSService {
                     break;
                 case 2:
                     updateServicePrice();
+                    Audit.writeToAudit(2, 3);
+                    Writer.writeAllToCSV();
                     break;
                 case 3:
                     System.out.println("Ascending or Descending? (0/1)");
@@ -47,6 +49,7 @@ public class MedicalSService {
                     System.out.println("Invalid option!");
 
             }
+
         }
     }
 
@@ -193,7 +196,7 @@ public class MedicalSService {
     //Helper pentru updateServicePrice
     private void updatePriceOfService(MedicalS s){
         System.out.println("Enter the new price: ");
-        int price = scanner.nextInt();
+        float price = scanner.nextFloat();
         scanner.nextLine();
         s.setPrice(price);
         System.out.println("The price has been updated!");

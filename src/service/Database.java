@@ -1,12 +1,13 @@
 package service;
 
-import model.medical_services.Appointment;
-import model.medical_services.Consultation;
-import model.medical_services.Radiography;
-import model.medical_services.Test;
+import model.medical_services.*;
 import model.person.*;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Database {
     private static Database single_instance = null;
@@ -16,6 +17,7 @@ public class Database {
     private static ArrayList<Consultation> consultations = new ArrayList<>();
     private static ArrayList<Radiography> radiographies = new ArrayList<>();
     private static ArrayList<Test> tests = new ArrayList<>();
+    private static ArrayList<Appointment> appointments = new ArrayList<>();
 
 
     private Database() {
@@ -53,6 +55,14 @@ public class Database {
         return specializations;
     }
 
+    public static ArrayList<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public static void setAppointments(ArrayList<Appointment> appointments) {
+        Database.appointments = appointments;
+    }
+
     // Stergerea unei programari
     public static void deleteAppointment(Appointment a) {
         String patientNumeric = a.getPatientNumericCode();
@@ -83,6 +93,8 @@ public class Database {
                 }
             }
         }
+
+        appointments.remove(a);
 
     }
 }

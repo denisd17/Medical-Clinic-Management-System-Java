@@ -10,6 +10,11 @@ public class Test extends MedicalS{
 
     }
 
+    public Test(Float price, TestType type) {
+        super(price);
+        this.type = type;
+    }
+
     public Test(TestType type) {
         this.type = type;
     }
@@ -24,7 +29,7 @@ public class Test extends MedicalS{
 
     @Override
     public String toString() {
-        return type.name() + "Test\n" + super.toString();
+        return type.name() + " Test\n" + super.toString();
     }
 
     @Override

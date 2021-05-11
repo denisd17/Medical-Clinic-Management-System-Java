@@ -30,4 +30,9 @@ public class WorkDay {
     public void setEndHour(int endHour) {
         this.endHour = endHour;
     }
+
+    @Override
+    public String toString() {
+        return "(" + startHour + " " + endHour + ")";
+    }
 }

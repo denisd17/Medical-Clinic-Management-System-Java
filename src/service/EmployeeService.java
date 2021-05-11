@@ -40,12 +40,15 @@ public class EmployeeService {
                     break;
                 case 3:
                     addEmployee();
+                    Audit.writeToAudit(1,2);
                     break;
                 case 4:
                     updateEmployee();
+                    Audit.writeToAudit(2, 2);
                     break;
                 case 5:
                     deleteEmployee();
+                    Audit.writeToAudit(3, 2);
                     break;
                 case 6:
                     break;
@@ -53,6 +56,9 @@ public class EmployeeService {
                     System.out.println("Invalid option!");
 
             }
+            //Actualizare fisiere CSV dupa fiecare modificare
+            if(option != 1 && option != 2 && option != 6)
+                Writer.writeAllToCSV();
         }
 
     }
@@ -208,7 +214,8 @@ public class EmployeeService {
 
             //Stergerea consultatiei aferente din lista de servicii,
             //in cazul in care nu mai exista nici un alt doctor cu aceeasi specializare
-            updateSpecializationAndService(empSpec);
+            if(empSpec != null)
+                updateSpecializationAndService(empSpec);
 
             System.out.println("The employee has been deleted.");
         }

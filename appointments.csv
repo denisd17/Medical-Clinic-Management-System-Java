@@ -1,0 +1,5 @@
+Date,Hour,Consultation,Radiographies,Tests,Patient CNP,Doctor CNP,Nurse CNP
+06/10/2021,14,Pediatric,"Abdominal Chest","Lipid",100,110,111
+14/05/2021,8,Pediatric,"Chest Neck","Lipid Metabolic Thyroid",190,110,111
+18/05/2021,8,null,"Dental",null,190,null,111
+14/05/2021,9,Pediatric,null,null,190,110,null

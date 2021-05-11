@@ -14,6 +14,7 @@ public class PatientService {
     private static ArrayList<Radiography> radiographies = Database.getRadiographies();
     private static ArrayList<Employee> employees = Database.getEmployees();
     private static ArrayList<Test> tests = Database.getTests();
+    private static ArrayList<Appointment> appointments = Database.getAppointments();
 
     //Meniu gestionare pacienti
     public void menu() {
@@ -51,15 +52,19 @@ public class PatientService {
                     break;
                 case 5:
                     addPatient();
+                    Audit.writeToAudit(1,1);
                     break;
                 case 6:
                     updatePatient();
+                    Audit.writeToAudit(2, 1);
                     break;
                 case 7:
                     deletePatient();
+                    Audit.writeToAudit(3, 1);
                     break;
                 case 8:
                     schedulePatientAppointment();
+                    Audit.writeToAudit(1, 4);
                     break;
                 case 9:
                     break;
@@ -67,6 +72,9 @@ public class PatientService {
                     System.out.println("Invalid option!");
 
             }
+            //Update al fisierelor CSV dupa fiecare modificare
+            if(option != 1 && option != 2 && option != 3 && option != 4 && option != 9)
+                Writer.writeAllToCSV();
         }
 
     }
@@ -468,7 +476,7 @@ public class PatientService {
             option = scanner.nextInt();
             scanner.nextLine();
 
-            c.add(Calendar.DATE, (7 - option));
+            c.add(Calendar.DATE, (option - 7));
             Date appointmentDate = c.getTime();
             int dayOfWeek = c.get(Calendar.DAY_OF_WEEK) - 2;
 
@@ -566,6 +574,7 @@ public class PatientService {
                         newAppointment.setDoctorNumericCode(d.getCnp());
                         newAppointment.setNurseNumericCode(n.getCnp());
 
+                        appointments.add(newAppointment);
                         // Adaugare programare in listele specifice
                         // Pentru doctor si asistenta
                         d.addAppointment(newAppointment);
@@ -603,6 +612,7 @@ public class PatientService {
                     newAppointment.setHour(appHour);
                     newAppointment.setDoctorNumericCode(d.getCnp());
 
+                    appointments.add(newAppointment);
                     // Adaugare in lista de programari a doctorului
                     d.addAppointment(newAppointment);
 
@@ -634,8 +644,8 @@ public class PatientService {
                 if (!nurseHours.isEmpty()) {
                     int appHour = Collections.min(nurseHours);
                     newAppointment.setHour(appHour);
-                    newAppointment.setDoctorNumericCode(n.getCnp());
-
+                    newAppointment.setNurseNumericCode(n.getCnp());
+                    appointments.add(newAppointment);
                     // Adaugare in lista de programari a asistentei
                     n.addAppointment(newAppointment);
 

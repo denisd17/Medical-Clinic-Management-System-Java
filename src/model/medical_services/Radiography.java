@@ -9,6 +9,11 @@ public class Radiography extends MedicalS{
 
     }
 
+    public Radiography(Float price, RadiographyArea area) {
+        super(price);
+        this.area = area;
+    }
+
     public Radiography(RadiographyArea area) {
         this.area = area;
     }
@@ -23,7 +28,7 @@ public class Radiography extends MedicalS{
 
     @Override
     public String toString() {
-        return area.name() + "Radiography\n" + super.toString();
+        return area.name() + " Radiography\n" + super.toString();
     }
 
     @Override

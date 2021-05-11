@@ -79,7 +79,7 @@ public class Patient extends Person{
         result.append("Birthdate: ").append(birthDateString).append("\n");
 
         if(medicalRecord == null) {
-            result.append("This patient has no medical record available\n");
+            result.append("This patient has no medical record available\n\n");
         }
         else{
             result.append(medicalRecord.toString()).append("\n");
