@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        
+        //System.out.println("test");
         Scanner scanner = new Scanner(System.in);
         EmployeeService employeeService = new EmployeeService();
         PatientService patientService = new PatientService();
