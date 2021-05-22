@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
-public class MedicalSService {
+public class MedicalServiceService {
     private static ArrayList<Radiography> radiographies = Database.getRadiographies();
     private static ArrayList<Test> tests = Database.getTests();
     private static ArrayList<Consultation> consultations = Database.getConsultations();
@@ -161,7 +161,7 @@ public class MedicalSService {
     }
 
     private void showSortedServices(int sort) {
-        ArrayList<MedicalS> medicalServices = new ArrayList<>();
+        ArrayList<MedicalService> medicalServices = new ArrayList<>();
 
         for(Consultation c : consultations){
             medicalServices.add(c);
@@ -188,13 +188,13 @@ public class MedicalSService {
             System.out.println("[ASCENDING]");
         }
 
-        for(MedicalS s : medicalServices){
+        for(MedicalService s : medicalServices){
             System.out.println(s);
         }
     }
 
     //Helper pentru updateServicePrice
-    private void updatePriceOfService(MedicalS s){
+    private void updatePriceOfService(MedicalService s){
         System.out.println("Enter the new price: ");
         float price = scanner.nextFloat();
         scanner.nextLine();

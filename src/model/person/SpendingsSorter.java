@@ -1,7 +1,5 @@
 package model.person;
 
-import model.medical_services.MedicalS;
-
 import java.util.Comparator;
 
 public class SpendingsSorter implements Comparator<Patient> {

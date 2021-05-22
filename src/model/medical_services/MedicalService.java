@@ -2,15 +2,15 @@ package model.medical_services;
 
 import java.util.Objects;
 
-public abstract class MedicalS {
+public abstract class MedicalService {
     private float price;
 
 
-    public MedicalS() {
+    public MedicalService() {
 
     }
 
-    public MedicalS(float price) {
+    public MedicalService(float price) {
         this.price = price;
     }
 
@@ -35,7 +35,7 @@ public abstract class MedicalS {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MedicalS medicalS = (MedicalS) o;
+        MedicalService medicalS = (MedicalService) o;
         return Float.compare(medicalS.price, price) == 0;
     }
 

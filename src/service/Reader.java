@@ -25,7 +25,9 @@ public class Reader {
 
     public static <T> void readCSV(ArrayList<T> array, String fileName) {
 
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        String fullPath = "src/resources/" + fileName;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fullPath))) {
             String line;
 
             //PRIMA LINIE, COLOANELE DIN CSV
@@ -35,32 +37,32 @@ public class Reader {
                 String[] data = line.strip().split(",");
 
                 switch(fileName){
-                    case "specializations.csv":
+                    case "Persons/specializations.csv":
                         //System.out.println("123456");
                         Specialization newSpecialization = new Specialization(data[0]);
                         array.add((T) newSpecialization);
                         break;
-                    case "employees.csv":
+                    case "Persons/employees.csv":
                         Employee newEmployee = (Employee) parsePerson(data, 2);
                         array.add((T) newEmployee);
                         break;
-                    case "patients.csv":
+                    case "Persons/patients.csv":
                         Patient newPatient = (Patient) parsePerson(data, 1);
                         array.add((T) newPatient);
                         break;
-                    case "appointments.csv":
+                    case "Appointments/appointments.csv":
                         Appointment newAppointment = parseAppointment(data);
                         array.add((T) newAppointment);
                         break;
-                    case "consultations.csv":
+                    case "MedicalServices/consultations.csv":
                         Consultation newConsultation = (Consultation) parseMedicalService(data, 1);
                         array.add((T) newConsultation);
                         break;
-                    case "radiographies.csv":
+                    case "MedicalServices/radiographies.csv":
                         Radiography newRadiography = (Radiography) parseMedicalService(data, 3);
                         array.add((T) newRadiography);
                         break;
-                    case "tests.csv":
+                    case "MedicalServices/tests.csv":
                         Test newTest = (Test) parseMedicalService(data, 2);
                         array.add((T) newTest);
                         break;
@@ -159,7 +161,7 @@ public class Reader {
         }
     }
 
-    public static MedicalS parseMedicalService(String[] data, int type) {
+    public static MedicalService parseMedicalService(String[] data, int type) {
         Float price = Float.parseFloat(data[1]);
 
         switch(type){
@@ -203,7 +205,7 @@ public class Reader {
 
     public static Appointment parseAppointment(String[] data) {
         Date appointmentDate = null;
-        Set<MedicalS> services = new HashSet<>();
+        Set<MedicalService> services = new HashSet<>();
         try {
             appointmentDate = new SimpleDateFormat("dd/MM/yyyy").parse(data[0]);
         }
@@ -288,12 +290,12 @@ public class Reader {
 
     //Citeste toate informatiile din fisierele CSV
     public static void readAllFromCSV() {
-        Reader.readCSV(Database.getSpecializations(), "specializations.csv");
-        Reader.readCSV(Database.getConsultations(), "consultations.csv");
-        Reader.readCSV(Database.getRadiographies(), "radiographies.csv");
-        Reader.readCSV(Database.getTests(), "tests.csv");
-        Reader.readCSV(Database.getPatients(), "patients.csv");
-        Reader.readCSV(Database.getEmployees(), "employees.csv");
-        Reader.readCSV(Database.getAppointments(), "appointments.csv");
+        Reader.readCSV(Database.getSpecializations(), "Persons/specializations.csv");
+        Reader.readCSV(Database.getConsultations(), "MedicalServices/consultations.csv");
+        Reader.readCSV(Database.getRadiographies(), "MedicalServices/radiographies.csv");
+        Reader.readCSV(Database.getTests(), "MedicalServices/tests.csv");
+        Reader.readCSV(Database.getPatients(), "Persons/patients.csv");
+        Reader.readCSV(Database.getEmployees(), "Persons/employees.csv");
+        Reader.readCSV(Database.getAppointments(), "Appointments/appointments.csv");
     }
 }

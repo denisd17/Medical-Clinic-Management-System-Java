@@ -21,7 +21,7 @@ public class Audit {
 
     public static void writeToAudit(int action, int table) {
         try{
-            FileWriter csvWriter = new FileWriter("audit.csv", true);
+            FileWriter csvWriter = new FileWriter("src/resources/Audit/audit.csv", true);
 
             String actionDescription = null;
             String tableName = null;

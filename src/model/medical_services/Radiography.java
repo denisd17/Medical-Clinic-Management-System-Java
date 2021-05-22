@@ -2,7 +2,7 @@ package model.medical_services;
 
 import java.util.Objects;
 
-public class Radiography extends MedicalS{
+public class Radiography extends MedicalService {
     private RadiographyArea area;
 
     public Radiography() {

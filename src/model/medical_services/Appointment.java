@@ -8,7 +8,7 @@ import java.util.Set;
 public class Appointment {
     private Date date;
     private int hour;
-    private Set<MedicalS> medicalServices = new HashSet<>();
+    private Set<MedicalService> medicalServices = new HashSet<>();
     private String patientNumericCode;
     private String doctorNumericCode;
     private String nurseNumericCode;
@@ -18,7 +18,7 @@ public class Appointment {
 
     }
 
-    public Appointment(Date date, Set<MedicalS> medicalServices) {
+    public Appointment(Date date, Set<MedicalService> medicalServices) {
         this.date = date;
         this.medicalServices = medicalServices;
     }
@@ -31,15 +31,15 @@ public class Appointment {
         this.date = date;
     }
 
-    public Set<MedicalS> getMedicalServices() {
+    public Set<MedicalService> getMedicalServices() {
         return medicalServices;
     }
 
-    public void setMedicalServices(Set<MedicalS> medicalServices) {
+    public void setMedicalServices(Set<MedicalService> medicalServices) {
         this.medicalServices = medicalServices;
     }
 
-    public void addMedicalService(MedicalS medicalService) {
+    public void addMedicalService(MedicalService medicalService) {
         medicalServices.add(medicalService);
     }
 
@@ -79,7 +79,7 @@ public class Appointment {
     public float calculateAppointmentPrice() {
         float price = 0;
 
-        for (MedicalS s : medicalServices){
+        for (MedicalService s : medicalServices){
             price += s.getPrice();
         }
 
@@ -95,7 +95,7 @@ public class Appointment {
 
         result.append("The following services are included:\n");
 
-        for(MedicalS s : medicalServices) {
+        for(MedicalService s : medicalServices) {
             result.append(s.toString());
         }
 

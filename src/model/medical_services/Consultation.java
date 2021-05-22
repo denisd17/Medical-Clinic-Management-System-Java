@@ -4,7 +4,7 @@ import model.person.Specialization;
 
 import java.util.Objects;
 
-public class Consultation extends MedicalS{
+public class Consultation extends MedicalService {
     Specialization specialization;
 
     public Consultation(float price, Specialization specialization) {

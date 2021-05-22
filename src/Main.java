@@ -1,20 +1,14 @@
-import model.medical_services.Appointment;
-import model.medical_services.Consultation;
-import model.medical_services.MedicalS;
-import model.person.*;
 import service.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.File;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        EmployeeService e = new EmployeeService();
-        PatientService p = new PatientService();
-        MedicalSService m = new MedicalSService();
+        EmployeeService employeeService = new EmployeeService();
+        PatientService patientService = new PatientService();
+        MedicalServiceService medicalServiceService = new MedicalServiceService();
         int option = 0;
         Reader.readAllFromCSV();
 
@@ -30,13 +24,13 @@ public class Main {
 
             switch(option) {
                 case 1:
-                    p.menu();
+                    patientService.menu();
                     break;
                 case 2:
-                    e.menu();
+                    employeeService.menu();
                     break;
                 case 3:
-                    m.menu();
+                    medicalServiceService.menu();
                     break;
                 case 4:
                     break;

@@ -2,7 +2,7 @@ package model.medical_services;
 
 import java.util.Objects;
 
-public class Test extends MedicalS{
+public class Test extends MedicalService {
     private TestType type;
 
 

@@ -22,11 +22,14 @@ public class Writer {
     }
 
     public static <T> void writeToCSV(ArrayList<T> array, String filename) {
-        try (BufferedWriter br = new BufferedWriter(new FileWriter(filename))) {
+
+        String fullPath = "src/resources/" + filename;
+
+        try (BufferedWriter br = new BufferedWriter(new FileWriter(fullPath))) {
             StringBuilder toWrite = new StringBuilder();
 
             switch(filename){
-                case "specializations.csv":
+                case "Persons/specializations.csv":
                     br.append("Name\n");
 
                     for(Object o : array) {
@@ -38,7 +41,7 @@ public class Writer {
                     br.flush();
                     br.close();
                     break;
-                case "employees.csv":
+                case "Persons/employees.csv":
                     br.append("First Name,Last Name,Phone Number,eMail,CNP,Schedule,Job\n");
 
                     for(Object o : array) {
@@ -85,7 +88,7 @@ public class Writer {
                     br.flush();
                     br.close();
                     break;
-                case "patients.csv":
+                case "Persons/patients.csv":
                     br.append("First Name,Last Name,Phone Number,eMail,CNP,Birthdate,Smoker,Alergies,Diseases\n");
 
                     for(Object o : array) {
@@ -153,7 +156,7 @@ public class Writer {
                     br.flush();
                     br.close();
                     break;
-                case "appointments.csv":
+                case "Appointments/appointments.csv":
                     br.append("Date,Hour,Consultation,Radiographies,Tests,Patient CNP,Doctor CNP,Nurse CNP\n");
 
                     for(Object o : array) {
@@ -171,7 +174,7 @@ public class Writer {
                         toWrite.append(appointmentToWrite.getHour());
                         toWrite.append(",");
 
-                        for(MedicalS service : appointmentToWrite.getMedicalServices()) {
+                        for(MedicalService service : appointmentToWrite.getMedicalServices()) {
                             if(service instanceof Consultation) {
                                 c = (Consultation) service;
                             }
@@ -245,7 +248,7 @@ public class Writer {
                     br.flush();
                     br.close();
                     break;
-                case "consultations.csv":
+                case "MedicalServices/consultations.csv":
                     br.append("Specialization,Price\n");
 
                     for(Object o : array) {
@@ -265,7 +268,7 @@ public class Writer {
                     br.flush();
                     br.close();
                     break;
-                case "radiographies.csv":
+                case "MedicalServices/radiographies.csv":
                     br.append("Area,Price\n");
 
                     for(Object o : array) {
@@ -285,7 +288,7 @@ public class Writer {
                     br.flush();
                     br.close();
                     break;
-                case "tests.csv":
+                case "MedicalServices/tests.csv":
                     br.append("Type,Price\n");
 
                     for(Object o : array) {
@@ -319,12 +322,12 @@ public class Writer {
 
     //Scrie toate informatiile in fisierele CSV
     public static void writeAllToCSV() {
-        Writer.writeToCSV(Database.getSpecializations(), "specializations.csv");
-        Writer.writeToCSV(Database.getPatients(), "patients.csv");
-        Writer.writeToCSV(Database.getEmployees(), "employees.csv");
-        Writer.writeToCSV(Database.getAppointments(), "appointments.csv");
-        Writer.writeToCSV(Database.getTests(), "tests.csv");
-        Writer.writeToCSV(Database.getRadiographies(), "radiographies.csv");
-        Writer.writeToCSV(Database.getConsultations(), "consultations.csv");
+        Writer.writeToCSV(Database.getSpecializations(), "Persons/specializations.csv");
+        Writer.writeToCSV(Database.getPatients(), "Persons/patients.csv");
+        Writer.writeToCSV(Database.getEmployees(), "Persons/employees.csv");
+        Writer.writeToCSV(Database.getAppointments(), "Appointments/appointments.csv");
+        Writer.writeToCSV(Database.getTests(), "MedicalServices/tests.csv");
+        Writer.writeToCSV(Database.getRadiographies(), "MedicalServices/radiographies.csv");
+        Writer.writeToCSV(Database.getConsultations(), "MedicalServices/consultations.csv");
     }
 }
