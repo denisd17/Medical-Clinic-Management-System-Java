@@ -10,7 +10,12 @@ public class Test extends MedicalService {
 
     }
 
-    public Test(Float price, TestType type) {
+    public Test(int id, float price, TestType type) {
+        super(id, price);
+        this.type = type;
+    }
+
+    public Test(float price, TestType type) {
         super(price);
         this.type = type;
     }

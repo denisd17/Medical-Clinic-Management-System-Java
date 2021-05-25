@@ -12,6 +12,11 @@ public class Consultation extends MedicalService {
         this.specialization = specialization;
     }
 
+    public Consultation(int id, float price, Specialization specialization) {
+        super(id, price);
+        this.specialization = specialization;
+    }
+
     public Specialization getSpecialization() {
         return specialization;
     }

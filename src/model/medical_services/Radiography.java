@@ -9,8 +9,13 @@ public class Radiography extends MedicalService {
 
     }
 
-    public Radiography(Float price, RadiographyArea area) {
+    public Radiography(float price, RadiographyArea area) {
         super(price);
+        this.area = area;
+    }
+
+    public Radiography(int id, float price, RadiographyArea area) {
+        super(id, price);
         this.area = area;
     }
 

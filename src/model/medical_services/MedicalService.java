@@ -3,6 +3,7 @@ package model.medical_services;
 import java.util.Objects;
 
 public abstract class MedicalService {
+    private int id;
     private float price;
 
 
@@ -12,6 +13,19 @@ public abstract class MedicalService {
 
     public MedicalService(float price) {
         this.price = price;
+    }
+
+    public MedicalService(int id, float price) {
+        this.id = id;
+        this.price = price;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public float getPrice() {

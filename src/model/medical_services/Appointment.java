@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Appointment {
+    private int id;
     private Date date;
     private int hour;
     private Set<MedicalService> medicalServices = new HashSet<>();
@@ -21,6 +22,23 @@ public class Appointment {
     public Appointment(Date date, Set<MedicalService> medicalServices) {
         this.date = date;
         this.medicalServices = medicalServices;
+    }
+
+    public Appointment(int id, Date date, int hour, String patientNumericCode, String doctorNumericCode, String nurseNumericCode) {
+        this.id = id;
+        this.date = date;
+        this.hour = hour;
+        this.patientNumericCode = patientNumericCode;
+        this.doctorNumericCode = doctorNumericCode;
+        this.nurseNumericCode = nurseNumericCode;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Date getDate() {
