@@ -30,7 +30,7 @@ public class MedicalRecordRepository {
             generatedKeys.next();
             int recordKey = generatedKeys.getInt(1);
 
-            if(medicalRecord.getAlergies().isEmpty()) {
+            if(!medicalRecord.getAlergies().isEmpty()) {
                 for(String alergy : medicalRecord.getAlergies()) {
                     PreparedStatement preparedStmtInsertAlergy = databaseConnection.prepareStatement(insertSqlAlergy);
                     preparedStmtInsertAlergy.setString(1, alergy);
@@ -39,7 +39,7 @@ public class MedicalRecordRepository {
                 }
             }
 
-            if(medicalRecord.getChronicDiseases().isEmpty()) {
+            if(!medicalRecord.getChronicDiseases().isEmpty()) {
                 for(String disease : medicalRecord.getChronicDiseases()) {
                     PreparedStatement preparedStmtInsertDisease = databaseConnection.prepareStatement(insertSqlDisease);
                     preparedStmtInsertDisease.setString(1, disease);
@@ -88,7 +88,7 @@ public class MedicalRecordRepository {
                     diseases.add(resultSetDiseases.getString(1));
                 }
 
-                return new MedicalRecord(resultSetMedicalRecord.getBoolean(2), alergies, diseases);
+                return new MedicalRecord(resultSetMedicalRecord.getInt(1), resultSetMedicalRecord.getBoolean(2), alergies, diseases);
             }
 
         }

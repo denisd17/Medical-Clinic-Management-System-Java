@@ -116,16 +116,39 @@ public class DoctorRepository {
     }
 
     public void deleteDoctor(String cnp) {
-        String deleteSqlNurse = "delete from nurses where cnp = ?";
+        String getSpecId = "select specialization_id from doctors where cnp = ?";
+        String deleteSqlDoctor = "delete from doctors where cnp = ?";
+        String countDoctors = "select count(*) from doctors where specialization_id = ?";
+        String deleteSpecialization = "delete from specializations where id = ?";
         Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
         ScheduleRepository scheduleRepository = new ScheduleRepository();
 
         try {
-            PreparedStatement preparedStmtDeleteNurse = databaseConnection.prepareStatement(deleteSqlNurse);
-            preparedStmtDeleteNurse.setString(1, cnp);
+            PreparedStatement preparedStmtGetSpecId = databaseConnection.prepareStatement(getSpecId);
+            preparedStmtGetSpecId.setString(1, cnp);
 
-            preparedStmtDeleteNurse.executeUpdate();
+            ResultSet rs = preparedStmtGetSpecId.executeQuery();
+            rs.next();
+            int specId = rs.getInt(1);
+
+            PreparedStatement preparedStmtDeleteDoctor = databaseConnection.prepareStatement(deleteSqlDoctor);
+            preparedStmtDeleteDoctor.setString(1, cnp);
+
+            preparedStmtDeleteDoctor.executeUpdate();
             scheduleRepository.deleteSchedule(cnp);
+
+            PreparedStatement preparedStmtGetSpecCount = databaseConnection.prepareStatement(countDoctors);
+            preparedStmtGetSpecCount.setInt(1, specId);
+            ResultSet rs2 = preparedStmtGetSpecCount.executeQuery();
+            rs2.next();
+
+            if(rs2.getInt(1) == 0) {
+                PreparedStatement preparedStmtDeleteSpec = databaseConnection.prepareStatement(deleteSpecialization);
+                preparedStmtDeleteSpec.setInt(1, specId);
+
+                preparedStmtDeleteSpec.executeUpdate();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -205,6 +228,24 @@ public class DoctorRepository {
     }
 
     public boolean checkIfDoctorExists(String cnp) {
+        String checkSqlDoctor = "select count(*) from doctors where cnp = ?";
+        Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
+
+        try {
+            PreparedStatement preparedStmtCheckDoctor = databaseConnection.prepareStatement(checkSqlDoctor);
+            preparedStmtCheckDoctor.setString(1, cnp);
+
+
+            ResultSet rs = preparedStmtCheckDoctor.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+            if(count == 1) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 

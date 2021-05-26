@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class MedicalRecord {
+    int id;
     boolean smoker;
     Set<String> alergies = new HashSet<>();
     Set<String> chronicDiseases = new HashSet<>();
@@ -17,6 +18,21 @@ public class MedicalRecord {
         this.smoker = smoker;
         this.alergies = alergies;
         this.chronicDiseases = chronicDiseases;
+    }
+
+    public MedicalRecord(int id, boolean smoker, Set<String> alergies, Set<String> chronicDiseases) {
+        this.id = id;
+        this.smoker = smoker;
+        this.alergies = alergies;
+        this.chronicDiseases = chronicDiseases;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean getSmoker() {

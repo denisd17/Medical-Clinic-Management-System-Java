@@ -49,6 +49,66 @@ public class AppointmentRepository {
             e.printStackTrace();
         }
     }
+    public Appointment getAppointmentById(int id) {
+        String getSqlAppointment = "select * from appointments where id = ?";
+        String getSqlAppointmentServices = "select s.type, s.price, s.name, spec.name from app_services aps " +
+                "join services s " +
+                "on(aps.service_id = s.id) " +
+                "left join specializations spec " +
+                "on(s.specialization_id = spec.id) " +
+                "where aps.app_id = ?";
+
+        Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
+
+        try {
+            PreparedStatement preparedStmtGetAppointment = databaseConnection.prepareStatement(getSqlAppointment);
+            preparedStmtGetAppointment.setInt(1, id);
+
+            ResultSet resultSet = preparedStmtGetAppointment.executeQuery();
+
+            resultSet.next();
+            java.util.Date appDate = new java.util.Date(resultSet.getDate(5).getTime());
+            Appointment newAppointment = new Appointment(resultSet.getInt(1), appDate, resultSet.getInt(6),
+                    resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+
+            PreparedStatement preparedStmtGetAppointmentServices = databaseConnection.prepareStatement(getSqlAppointmentServices);
+            preparedStmtGetAppointmentServices.setInt(1, id);
+            ResultSet resultSet2 = preparedStmtGetAppointmentServices.executeQuery();
+
+            while(resultSet2.next()) {
+                int serviceType = resultSet2.getInt(1);
+                float price = resultSet2.getFloat(2);
+                String serviceName = resultSet2.getString(3);
+                String specName = resultSet2.getString(4);
+
+                //Consultation
+                if(serviceType == 0){
+                    Specialization specialization = new Specialization(specName);
+                    Consultation newConsultation = new Consultation(price, specialization);
+                    newAppointment.addMedicalService(newConsultation);
+                }
+                //Radiography
+                else if(serviceType == 1){
+                    RadiographyArea area = RadiographyArea.valueOf(serviceName);
+                    Radiography newRadiography = new Radiography(price, area);
+                    newAppointment.addMedicalService(newRadiography);
+                }
+                //Test
+                else {
+                    TestType testType = TestType.valueOf(serviceName);
+                    Test newTest = new Test(price, testType);
+                    newAppointment.addMedicalService(newTest);
+                }
+            }
+
+            return newAppointment;
+        }
+        catch(SQLException e){
+                e.printStackTrace();
+        }
+
+        return null;
+    }
 
     //0 - Patient
     //1 - Nurse
@@ -215,10 +275,6 @@ public class AppointmentRepository {
         return appointments;
     }
 
-    public Appointment getAppointmentById(int id) {
-        return null;
-    }
-
     public void deleteAppointment(int id) {
         String deleteSqlAppointment = "delete from appointments " +
                 "where id = ?";
@@ -236,11 +292,37 @@ public class AppointmentRepository {
     }
 
     public void insertMedicalService(int appointmentId, MedicalService medicalService) {
+        String insertSqlMedicalService = "insert into app_services(app_id, service_id) values(?, ?)";
+
+        Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
+
+        try {
+            PreparedStatement preparedStmtUpdateAppointment = databaseConnection.prepareStatement(insertSqlMedicalService);
+            preparedStmtUpdateAppointment.setInt(1, appointmentId);
+            preparedStmtUpdateAppointment.setInt(2, medicalService.getId());
+
+            preparedStmtUpdateAppointment.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
     public void deleteMedicalService(int appointmentId, MedicalService medicalService) {
+        String deleteSqlMedicalService = "delete from app_services " +
+                "where app_id = ? and service_id = ?";
 
+        Connection databaseConnection = DatabaseConfiguration.getDatabaseConnection();
+
+        try {
+            PreparedStatement preparedStmtUpdateAppointment = databaseConnection.prepareStatement(deleteSqlMedicalService);
+            preparedStmtUpdateAppointment.setInt(1, appointmentId);
+            preparedStmtUpdateAppointment.setInt(2, medicalService.getId());
+
+            preparedStmtUpdateAppointment.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void changeDate(int appointmentId, Date date) {

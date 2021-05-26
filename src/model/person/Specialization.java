@@ -3,10 +3,15 @@ package model.person;
 import java.util.Objects;
 
 public class Specialization {
+    int id;
     private String specializationName;
 
-
     public Specialization(String specializationName) {
+        this.specializationName = specializationName;
+    }
+
+    public Specialization(int id, String specializationName) {
+        this.id = id;
         this.specializationName = specializationName;
     }
 

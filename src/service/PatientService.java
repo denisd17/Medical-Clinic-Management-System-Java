@@ -2,6 +2,7 @@ package service;
 
 import model.medical_services.*;
 import model.person.*;
+import repository.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,11 @@ import java.util.*;
 
 public class PatientService {
     private Scanner scanner = new Scanner(System.in);
+    private PatientRepository patientRepository = new PatientRepository();
+    private MedicalServiceRepository medicalServiceRepository = new MedicalServiceRepository();
+    private DoctorRepository doctorRepository = new DoctorRepository();
+    private NurseRepository nurseRepository = new NurseRepository();
+    private AppointmentRepository appointmentRepository = new AppointmentRepository();
     private static ArrayList<Patient> patients = Database.getPatients();
     private static ArrayList<Consultation> consultations = Database.getConsultations();
     private static ArrayList<Radiography> radiographies = Database.getRadiographies();
@@ -21,7 +27,7 @@ public class PatientService {
         int option = 0;
         System.out.println("Choose an option.");
 
-        while(option != 9){
+        while(option != 12){
             System.out.println("1. List all the registered patients");
             System.out.println("2. List patients ordered by total money spent");
             System.out.println("3. Search and display patient info");
@@ -30,7 +36,10 @@ public class PatientService {
             System.out.println("6. Update patient info");
             System.out.println("7. Remove patient");
             System.out.println("8. Schedule a new appointment");
-            System.out.println("9. Return to main menu");
+            System.out.println("9. Edit appointment info");
+            System.out.println("10. Show appointment info");
+            System.out.println("11. Delete appointment");
+            System.out.println("12. Return to main menu");
             option = scanner.nextInt();
             scanner.nextLine();
 
@@ -67,14 +76,25 @@ public class PatientService {
                     Audit.writeToAudit(1, 4);
                     break;
                 case 9:
+                    editPatientAppointment();
+                    Audit.writeToAudit(2, 4);
+                    break;
+                case 10:
+                    getPatientAppointment();
+                    break;
+                case 11:
+                    deletePatientAppointment();
+                    Audit.writeToAudit(3, 4);
+                    break;
+                case 12:
                     break;
                 default:
                     System.out.println("Invalid option!");
 
             }
             //Update al fisierelor CSV dupa fiecare modificare
-            if(option != 1 && option != 2 && option != 3 && option != 4 && option != 9)
-                Writer.writeAllToCSV();
+            //if(option != 1 && option != 2 && option != 3 && option != 4 && option != 9)
+                //Writer.writeAllToCSV();
         }
 
     }
@@ -157,12 +177,14 @@ public class PatientService {
             }
             newPatient.setMedicalRecord(newMedicalRecord);
         }
-
-        patients.add(newPatient);
+        patientRepository.insertPatient(newPatient);
+        //patients.add(newPatient);
     }
 
     //Afisare lista pacienti
     private void showPatients() {
+        ArrayList<Patient> patients = patientRepository.getAllPatients();
+
         if (!patients.isEmpty()) {
             for(Patient p : patients) {
                 System.out.println("--------------------");
@@ -178,7 +200,7 @@ public class PatientService {
     private void showPatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
-        Patient patientToBeShown = searchPatient(cnp);
+        Patient patientToBeShown = patientRepository.getPatient(cnp);
 
         if(patientToBeShown == null) {
             System.out.println("There is no patient with the cnp: " + cnp);
@@ -189,7 +211,7 @@ public class PatientService {
     }
 
     private void showTopPatients(int sort) {
-        ArrayList<Patient> sortedPatients = Database.getPatients();
+        ArrayList<Patient> sortedPatients = patientRepository.getAllPatients();
 
         if(sortedPatients.isEmpty()) {
             System.out.println("There are no registered patients!");
@@ -223,23 +245,21 @@ public class PatientService {
     private void updatePatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
-        Patient patientToBeUpdated = searchPatient(cnp);
+        Patient patientToBeUpdated = patientRepository.getPatient(cnp);
 
         if(patientToBeUpdated == null) {
             System.out.println("There is no patient with the cnp: " + cnp);
         }
         else {
             int option = 0;
-            while(option != 8){
+            while(option != 6){
                 System.out.println("What info do you wish to update?");
                 System.out.println("1. First name");
                 System.out.println("2. Last name");
                 System.out.println("3. Phone number");
                 System.out.println("4. Email");
-                System.out.println("5. CNP");
-                System.out.println("6. Birth date");
-                System.out.println("7. Medical records");
-                System.out.println("8. Exit");
+                System.out.println("5. Birth date");
+                System.out.println("6. Exit");
                 option = scanner.nextInt();
                 scanner.nextLine();
 
@@ -247,42 +267,40 @@ public class PatientService {
                     case 1:
                         System.out.println("Patient's first name: ");
                         String fName = scanner.nextLine();
-                        patientToBeUpdated.setFirstName(fName);
+                        patientRepository.updatePatientFirstName(cnp, fName);
+                        //patientToBeUpdated.setFirstName(fName);
                         break;
                     case 2:
                         System.out.println("Patient's last name: ");
                         String lName = scanner.nextLine();
-                        patientToBeUpdated.setLastName(lName);
+                        patientRepository.updatePatientLastName(cnp, lName);
+                        //patientToBeUpdated.setLastName(lName);
                         break;
                     case 3:
                         System.out.println("Patient's phone number: ");
                         String pNumber = scanner.nextLine();
-                        patientToBeUpdated.setPhoneNumber(pNumber);
+                        patientRepository.updatePatientPhoneNumber(cnp, pNumber);
+                        //patientToBeUpdated.setPhoneNumber(pNumber);
                         break;
                     case 4:
                         System.out.println("Patient's email: ");
                         String pEmail = scanner.nextLine();
-                        patientToBeUpdated.setEmail(pEmail);
+                        patientRepository.updatePatientEmail(cnp, pEmail);
+                        //patientToBeUpdated.setEmail(pEmail);
                         break;
                     case 5:
-                        System.out.println("Patient's CNP: ");
-                        String pCnp = scanner.nextLine();
-                        patientToBeUpdated.setCnp(pCnp);
-                        break;
-                    case 6:
                         System.out.println("Patient's birthdate: ");
                         String pBirthDate = scanner.nextLine();
                         try {
                             Date pDate = new SimpleDateFormat("dd/MM/yyyy").parse(pBirthDate);
-                            patientToBeUpdated.setBirthDate(pDate);
+                            java.sql.Date sqlDate = new java.sql.Date(pDate.getTime());
+                            patientRepository.updatePatientBirthDate(cnp, sqlDate);
+                            //patientToBeUpdated.setBirthDate(pDate);
                         }
                         catch (Exception e) {
 
                         }
-                    case 7:
-                        System.out.println("COMING SOON");
-                        break;
-                    case 8:
+                    case 6:
                         break;
                 }
             }
@@ -294,12 +312,16 @@ public class PatientService {
     private void deletePatient() {
         System.out.println("Please enter the patient's CNP: ");
         String cnp = scanner.nextLine();
-        Patient patientToBeDeleted = searchPatient(cnp);
+        boolean exists = patientRepository.checkIfPatientExists(cnp);
 
-        if(patientToBeDeleted == null) {
+        if(!exists) {
             System.out.println("There is no patient with the cnp: " + cnp);
         }
         else {
+            patientRepository.deletePatient(cnp);
+            System.out.println("The patient has been deleted.");
+
+            /* COD ETAPA 2
             // Stergerea programarilor aferente
             Iterator<Appointment> it = patientToBeDeleted.getAppointments().iterator();
             while (it.hasNext()) {
@@ -308,7 +330,8 @@ public class PatientService {
                 Database.deleteAppointment(a);
             }
             patients.remove(patientToBeDeleted);
-            System.out.println("The patient has been deleted.");
+
+             */
         }
     }
 
@@ -325,6 +348,8 @@ public class PatientService {
     }
 
     private void schedulePatientAppointment() {
+        ArrayList<Patient> patients = patientRepository.getAllPatients();
+
         if(patients.isEmpty()){
             System.out.println("There are no registered patients");
             return;
@@ -336,24 +361,19 @@ public class PatientService {
         while(p == null) {
             System.out.println("Enter the patient's numeric code");
             cnp = scanner.nextLine();
-            p = searchPatient(cnp);
+            p = patientRepository.getPatient(cnp);
             addAppointment(p);
         }
     }
 
     private void showPatientAppointments() {
-        if(patients.isEmpty()){
-            System.out.println("There are no registered patients");
-            return;
-        }
-
         Patient p = null;
         String cnp;
 
 
         System.out.println("Enter the patient's numeric code");
         cnp = scanner.nextLine();
-        p = searchPatient(cnp);
+        p = patientRepository.getPatient(cnp);
 
         if(p == null) {
             System.out.print("There is no patient with the numeric code ");
@@ -376,6 +396,9 @@ public class PatientService {
     }
 
     private void addAppointment(Patient p) {
+        ArrayList<Consultation> consultations = medicalServiceRepository.getConsultations();
+        ArrayList<Radiography> radiographies = medicalServiceRepository.getRadiographies();
+        ArrayList<Test> tests = medicalServiceRepository.getTests();
         Appointment newAppointment = new Appointment();
         newAppointment.setPatientNumericCode(p.getCnp());
         boolean consultation = false;
@@ -484,7 +507,8 @@ public class PatientService {
 
             if(result == 0) {
                 newAppointment.setDate(appointmentDate);
-                p.addAppointment(newAppointment);
+                //p.addAppointment(newAppointment);
+                appointmentRepository.insertAppointment(newAppointment);
                 System.out.println("Appointment scheduled successfully!");
                 //System.out.println(newAppointment.getHour());
                 scheduled = true;
@@ -574,11 +598,11 @@ public class PatientService {
                         newAppointment.setDoctorNumericCode(d.getCnp());
                         newAppointment.setNurseNumericCode(n.getCnp());
 
-                        appointments.add(newAppointment);
+                        //appointments.add(newAppointment);
                         // Adaugare programare in listele specifice
                         // Pentru doctor si asistenta
-                        d.addAppointment(newAppointment);
-                        n.addAppointment(newAppointment);
+                        //d.addAppointment(newAppointment);
+                        //n.addAppointment(newAppointment);
 
                         return 0;
                     }
@@ -612,9 +636,9 @@ public class PatientService {
                     newAppointment.setHour(appHour);
                     newAppointment.setDoctorNumericCode(d.getCnp());
 
-                    appointments.add(newAppointment);
+                    //appointments.add(newAppointment);
                     // Adaugare in lista de programari a doctorului
-                    d.addAppointment(newAppointment);
+                    //d.addAppointment(newAppointment);
 
                     return 0;
                 }
@@ -645,9 +669,9 @@ public class PatientService {
                     int appHour = Collections.min(nurseHours);
                     newAppointment.setHour(appHour);
                     newAppointment.setNurseNumericCode(n.getCnp());
-                    appointments.add(newAppointment);
+                    //appointments.add(newAppointment);
                     // Adaugare in lista de programari a asistentei
-                    n.addAppointment(newAppointment);
+                    //n.addAppointment(newAppointment);
 
                     return 0;
                 }
@@ -660,13 +684,11 @@ public class PatientService {
     //Cauta doctori cu specializarea spec care sa lucreze in ziua specificata
     private ArrayList<Doctor> searchDoctor(Specialization spec, int day) {
         ArrayList<Doctor> doctors = new ArrayList<>();
+        ArrayList<Doctor> allDoctors = doctorRepository.getAllDoctors();
 
-        for(Employee e : employees) {
-            if (e instanceof Doctor) {
-                Doctor d = (Doctor) e;
-                if(d.getSpecializare().equals(spec) && d.getSchedule()[day].getEndHour() != 0) {
-                    doctors.add(d);
-                }
+        for(Doctor d : allDoctors) {
+            if(d.getSpecializare().equals(spec) && d.getSchedule()[day].getEndHour() != 0) {
+                doctors.add(d);
             }
         }
 
@@ -676,17 +698,188 @@ public class PatientService {
     //Cauta asistentele ce muncesc in ziua respectiva
     private ArrayList<Nurse> searchNurse(int day) {
         ArrayList<Nurse> nurses = new ArrayList<>();
+        ArrayList<Nurse> allNurses = nurseRepository.getAllNurses();
 
-        for(Employee e : employees) {
-            if (e instanceof Nurse) {
-                Nurse n = (Nurse) e;
-                if(n.getSchedule()[day].getEndHour() != 0) {
-                    nurses.add(n);
-                }
+        for(Nurse n : allNurses) {
+            if(n.getSchedule()[day].getEndHour() != 0) {
+                nurses.add(n);
             }
+
         }
 
         return nurses;
+    }
+
+    public void getPatientAppointment() {
+        System.out.println("Please enter the appointment id: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Appointment appointment = appointmentRepository.getAppointmentById(id);
+
+        if(appointment == null) {
+            System.out.println("There is no appointment with the id: " + id);
+        }
+        else {
+            System.out.println(appointment);
+        }
+    }
+
+    public void editPatientAppointment() {
+        System.out.println("Please enter the appointment id: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Appointment appointment = appointmentRepository.getAppointmentById(id);
+        ArrayList<Radiography> radiographies = medicalServiceRepository.getRadiographies();
+        ArrayList<Test> tests = medicalServiceRepository.getTests();
+
+        if(appointment == null) {
+            System.out.println("There is no appointment with the id: " + id);
+        }
+        else {
+            int option = 0;
+
+            while(option != 6){
+                System.out.println("1. Add radiographies");
+                System.out.println("2. Add tests");
+                System.out.println("3. Change nurse");
+                System.out.println("4. Change doctor");
+                System.out.println("5. Change date and hour");
+                System.out.println("6. Finish edit");
+
+                option = scanner.nextInt();
+                scanner.nextLine();
+
+                switch(option){
+                    case 1:
+                        int i = 0;
+                        for(Radiography r : radiographies){
+                            System.out.print(i + " ");
+                            System.out.println(r);
+                            i += 1;
+                        }
+                        System.out.println("Enter radiography number");
+
+                        int radiographyOption = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if(radiographyOption < 0 || radiographyOption >= radiographies.size()){
+                            System.out.println("Invalid option");
+                        }
+                        else {
+                            if(!appointment.getMedicalServices().contains(radiographies.get(radiographyOption))){
+                                appointmentRepository.insertMedicalService(appointment.getId(), radiographies.get(radiographyOption));
+                            }
+                            else {
+                                System.out.println("Radiography already added");
+                            }
+                        }
+                        break;
+                    case 2:
+                        int j = 0;
+                        for(Test t : tests){
+                            System.out.print(j + " ");
+                            System.out.println(t);
+                            j += 1;
+                        }
+                        System.out.println("Enter test number");
+
+                        int testOption = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if(testOption < 0 || testOption >= radiographies.size()){
+                            System.out.println("Invalid option");
+                        }
+                        else {
+                            if(!appointment.getMedicalServices().contains(tests.get(testOption))){
+                                appointmentRepository.insertMedicalService(appointment.getId(), tests.get(testOption));
+                            }
+                            else {
+                                System.out.println("Radiography already added");
+                            }
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Enter nurse CNP: ");
+                        String nurseCnp = scanner.nextLine();
+
+                        if(nurseRepository.checkIfNurseExists(nurseCnp)){
+                            appointmentRepository.changeNurse(appointment.getId(), nurseCnp);
+                        }
+                        else{
+                            System.out.println("There is no nurse with the CNP = " + nurseCnp);
+                        }
+                        break;
+                    case 4:
+                        System.out.println("Enter doctor CNP: ");
+                        String doctorCnp = scanner.nextLine();
+
+                        if(doctorRepository.checkIfDoctorExists(doctorCnp)){
+                            appointmentRepository.changeDoctor(appointment.getId(), doctorCnp);
+                        }
+                        else{
+                            System.out.println("There is no doctor with the CNP = " + doctorCnp);
+                        }
+                        break;
+                    case 5:
+                        System.out.println("Appointment date: ");
+                        String appDateString = scanner.nextLine();
+                        System.out.println("Appointment hour: ");
+                        int hour = scanner.nextInt();
+                        scanner.nextLine();
+
+                        try {
+                            Date appDate = new SimpleDateFormat("dd/MM/yyyy").parse(appDateString);
+                            java.sql.Date sqlDate = new java.sql.Date(appDate.getTime());
+                            appointmentRepository.changeDate(appointment.getId(), sqlDate);
+                            appointmentRepository.changeHour(appointment.getId(), hour);
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case 6:
+                        break;
+                    default:
+                        System.out.println("Invalid option");
+                }
+            }
+        }
+    }
+
+    public void deletePatientAppointment() {
+        System.out.println("Please enter the patient's CNP: ");
+        String cnp = scanner.nextLine();
+        boolean exists = patientRepository.checkIfPatientExists(cnp);
+        int i = 0;
+
+
+        if(!exists) {
+            System.out.println("There is no patient with the cnp: " + cnp);
+        }
+        else {
+            Patient patient = patientRepository.getPatient(cnp);
+
+            for(Appointment a : patient.getAppointments()) {
+                System.out.println("Appointment number: " + i);
+                System.out.println(a);
+                i += 1;
+            }
+
+            System.out.println("Enter appointment number: ");
+
+            int option = scanner.nextInt();
+            scanner.nextLine();
+
+            if(option < 0 || option >= patient.getAppointments().size()) {
+                System.out.println("Invalid option");
+            }
+            else {
+                appointmentRepository.deleteAppointment(patient.getAppointments().get(option).getId());
+                System.out.println("Appointment deleted");
+            }
+        }
     }
 
     private boolean equalDate(Date date1, Date date2) {

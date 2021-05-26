@@ -90,7 +90,7 @@ public class DataSetup {
                 "name varchar(30), " +
                 "price decimal(10,2), " +
                 "specialization_id int, " +
-                "foreign key(specialization_id) references specializations(id))";
+                "foreign key(specialization_id) references specializations(id) on delete cascade)";
 
         String createAppServicesTable = "create table if not exists app_services( " +
                 "id int primary key auto_increment, " +

@@ -3,11 +3,17 @@ package service;
 import model.medical_services.Appointment;
 import model.medical_services.Consultation;
 import model.person.*;
+import repository.DoctorRepository;
+import repository.NurseRepository;
+import repository.SpecializationRepository;
 
 import java.util.*;
 
 public class EmployeeService {
     Scanner scanner = new Scanner(System.in);
+    private NurseRepository nurseRepository = new NurseRepository();
+    private DoctorRepository doctorRepository = new DoctorRepository();
+    private SpecializationRepository specializationRepository = new SpecializationRepository();
     private final String weekDays[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
     private static ArrayList<Specialization> specializations = Database.getSpecializations();
     private static ArrayList<Employee> employees = Database.getEmployees();
@@ -19,44 +25,57 @@ public class EmployeeService {
         int option = 0;
         System.out.println("Choose an option.");
 
-        while(option != 6){
-            System.out.println("1. List all the registered employees");
-            System.out.println("2. Search and display employee info");
-            System.out.println("3. Add a new employee");
-            System.out.println("4. Update employee info");
-            System.out.println("5. Remove employee");
-            System.out.println("6. Return to main menu");
+        while(option != 9){
+            System.out.println("1. List all the registered nurses");
+            System.out.println("2. List all the registered doctors");
+            System.out.println("3. Search and display nurse info");
+            System.out.println("4. Search and display doctor info");
+            System.out.println("5. Add a new employee");
+            System.out.println("6. Update employee info");
+            System.out.println("7. Remove nurse");
+            System.out.println("8. Remove doctor");
+            System.out.println("9. Return to main menu");
             option = scanner.nextInt();
             scanner.nextLine();
 
             switch(option) {
                 case 1:
-                    showEmployees();
+                    showNurses();
                     break;
                 case 2:
-                    showEmployee();
+                    showDoctors();
                     break;
                 case 3:
+                    showNurse();
+                    break;
+                case 4:
+                    showDoctor();
+                    break;
+                case 5:
                     addEmployee();
                     Audit.writeToAudit(1,2);
                     break;
-                case 4:
+                case 6:
                     updateEmployee();
                     Audit.writeToAudit(2, 2);
                     break;
-                case 5:
-                    deleteEmployee();
+                case 7:
+                    deleteNurse();
                     Audit.writeToAudit(3, 2);
                     break;
-                case 6:
+                case 8:
+                    deleteDoctor();
+                    Audit.writeToAudit(3, 2);
+                    break;
+                case 9:
                     break;
                 default:
                     System.out.println("Invalid option!");
 
             }
             //Actualizare fisiere CSV dupa fiecare modificare
-            if(option != 1 && option != 2 && option != 6)
-                Writer.writeAllToCSV();
+            //if(option != 1 && option != 2 && option != 6)
+                //Writer.writeAllToCSV();
         }
 
     }
@@ -89,10 +108,42 @@ public class EmployeeService {
             enterSpecialization(newEmployee);
         }
 
-        employees.add(newEmployee);
+        if(option == 1){
+            nurseRepository.insertNurse((Nurse) newEmployee);
+        }
+        else {
+            doctorRepository.insertDoctor((Doctor) newEmployee);
+        }
+        //employees.add(newEmployee);
     }
 
-    //Afisare lista angajati
+    public void showNurses() {
+        ArrayList<Nurse> nurses = nurseRepository.getAllNurses();
+        if (!nurses.isEmpty()) {
+            for(Nurse n : nurses) {
+                System.out.println("--------------------");
+                System.out.print(n);
+            }
+        }
+        else {
+            System.out.println("There are no nurses currently working at this clinic.");
+        }
+    }
+
+    public void showDoctors() {
+        ArrayList<Doctor> doctors = doctorRepository.getAllDoctors();
+        if (!doctors.isEmpty()) {
+            for(Doctor d : doctors) {
+                System.out.println("--------------------");
+                System.out.print(d);
+            }
+        }
+        else {
+            System.out.println("There are no doctors currently working at this clinic.");
+        }
+    }
+
+    //Afisare lista angajati - COD ETAPA 2
     public void showEmployees() {
         if (!employees.isEmpty()) {
             for(Employee e : employees) {
@@ -105,7 +156,36 @@ public class EmployeeService {
         }
     }
 
-    //Afisare informatii angajat (cautare dupa CNP)
+
+    public void showNurse() {
+        System.out.println("Please enter the nurse's CNP: ");
+        String cnp = scanner.nextLine();
+        boolean exists = nurseRepository.checkIfNurseExists(cnp);
+
+        if(!exists) {
+            System.out.println("There is no nurse with the CNP: " + cnp);
+        }
+        else {
+            Nurse nurseToBeShown = nurseRepository.getNurse(cnp);
+            System.out.println(nurseToBeShown);
+        }
+    }
+
+    public void showDoctor() {
+        System.out.println("Please enter the doctor's CNP: ");
+        String cnp = scanner.nextLine();
+        boolean exists = doctorRepository.checkIfDoctorExists(cnp);
+
+        if(!exists) {
+            System.out.println("There is no doctor with the CNP: " + cnp);
+        }
+        else {
+            Doctor doctorToBeShown = doctorRepository.getDoctor(cnp);
+            System.out.println(doctorToBeShown);
+        }
+    }
+
+    //Afisare informatii angajat (cautare dupa CNP) - COD ETAPA 2
     public void showEmployee() {
         System.out.println("Please enter the employee's CNP: ");
         String cnp = scanner.nextLine();
@@ -119,72 +199,120 @@ public class EmployeeService {
         }
     }
 
-
-    //Actualizare informatii angajat
-    //TO DO: Actualizare fisa medicala
     public void updateEmployee() {
+        int optionType;
+        //Employee e = null;
+        System.out.println("Select the employee type: ");
+        System.out.println("1. Nurse");
+        System.out.println("2. Doctor");
+        optionType = scanner.nextInt();
+        scanner.nextLine();
+        boolean valid = true;
+
         System.out.println("Enter the employee numeric code: ");
         String cnp = scanner.nextLine();
-        Employee e = searchEmployee(cnp);
+
+        if(optionType == 1) {
+            if(!nurseRepository.checkIfNurseExists(cnp)) {
+                valid = false;
+            }
+        }
+        else {
+            if(!doctorRepository.checkIfDoctorExists(cnp)) {
+                valid = false;
+            }
+        }
+
         int option = 0;
 
-        if(e == null){
+        if(!valid){
             System.out.println("There is no employee with the provided numeric code");
         }
         else {
-            while(option != 7) {
+            while (option != 5) {
                 System.out.println("What do you wish to update?");
                 System.out.println("1. First name");
                 System.out.println("2. Last name");
                 System.out.println("3. Phone number");
-                System.out.println("4. Numeric code");
-                System.out.println("5. Schedule");
-                if(e instanceof Doctor) {
-                    System.out.println("6. Specialization");
-                    System.out.println("7. Exit");
-                }
-                else {
-                    System.out.println("6. Exit");
-                }
+                System.out.println("4. Schedule");
+                System.out.println("5. Exit");
+
                 option = scanner.nextInt();
                 scanner.nextLine();
 
-                switch(option) {
+                switch (option) {
                     case 1:
-                        enterFirstName(e);
+                        System.out.print("Employee's first name: ");
+                        String fName = scanner.nextLine();
+                        if (optionType == 1) {
+                            nurseRepository.updateNurseFirstName(cnp, fName);
+                        } else {
+                            doctorRepository.updateDoctorFirstName(cnp, fName);
+                        }
                         break;
                     case 2:
-                        enterLastName(e);
+                        System.out.print("Employee's last name: ");
+                        String lName = scanner.nextLine();
+                        if (optionType == 1) {
+                            nurseRepository.updateNurseLastName(cnp, lName);
+                        } else {
+                            doctorRepository.updateDoctorLastName(cnp, lName);
+                        }
                         break;
                     case 3:
-                        enterPhoneNumber(e);
+                        System.out.print("Employee's phone number: ");
+                        String pNumber = scanner.nextLine();
+                        if (optionType == 1) {
+                            nurseRepository.updateNursePhoneNumber(cnp, pNumber);
+                        } else {
+                            doctorRepository.updateDoctorPhoneNumber(cnp, pNumber);
+                        }
                         break;
                     case 4:
-                        enterCnp(e);
+                        WorkDay[] schedule = getUpdatedSchedule();
+                        if (optionType == 1) {
+                            for (int i = 0; i < 5; i++) {
+                                nurseRepository.updateNurseSchedule(cnp, weekDays[i], schedule[i].getStartHour(), schedule[i].getEndHour());
+                            }
+                        } else {
+                            for (int i = 0; i < 5; i++) {
+                                doctorRepository.updateDoctorSchedule(cnp, weekDays[i], schedule[i].getStartHour(), schedule[i].getEndHour());
+                            }
+                        }
                         break;
                     case 5:
-                        enterSchedule(e);
-                    case 6:
-                        if(e instanceof Doctor) {
-                            Specialization empSpec = ((Doctor) e).getSpecializare();
-                            enterSpecialization(e);
-                            updateSpecializationAndService(empSpec);
-                        }
-                        else{
-                            option = 7;
-                        }
-                    case 7:
                         break;
                     default:
                         System.out.println("Invalid option!");
                 }
             }
         }
+    }
+    public void deleteNurse() {
+        System.out.println("Please enter the nurse's CNP: ");
+        String cnp = scanner.nextLine();
 
+        if(!nurseRepository.checkIfNurseExists(cnp)) {
+            System.out.println("There is no nurse with the CNP: " + cnp);
+        }
+        else {
+            nurseRepository.deleteNurse(cnp);
+        }
     }
 
-    //Stergere angajat
-    //TO DO: La stergere angajat, anulare a tuturor programarilor (dupa implementare programari)
+    public void deleteDoctor() {
+        System.out.println("Please enter the doctor's CNP: ");
+        String cnp = scanner.nextLine();
+
+        if(!doctorRepository.checkIfDoctorExists(cnp)) {
+            System.out.println("There is no doctor with the CNP: " + cnp);
+        }
+        else {
+            doctorRepository.deleteDoctor(cnp);
+        }
+
+    }
+    //Stergere angajat - COD ETAPA 2
     public void deleteEmployee() {
         System.out.println("Please enter the employee's CNP: ");
         String cnp = scanner.nextLine();
@@ -223,6 +351,7 @@ public class EmployeeService {
     //In cazul in care nu mai exista nici un alt doctor cu acea specializare
     //Va fi stearsa consultatia aferenta, precum si specializarea din lista de specializari
     //TO DO: Actualizare programari (dupa implementare programari)
+    //COD ETAPA 2
     private void updateSpecializationAndService(Specialization s){
         boolean gasit = false;
 
@@ -292,6 +421,49 @@ public class EmployeeService {
     }
 
     //Program de lucru
+    private WorkDay[] getUpdatedSchedule() {
+        WorkDay schedule[] = new WorkDay[5];
+        for(int i = 0; i < 5; i++) {
+            schedule[i] = new WorkDay();
+        }
+        //Exemplu de input: 135
+        //Selecteaza ca zile de munca: Luni, Miercuri, Joi
+        System.out.print("Select the employee's work days.");
+        System.out.println("Enter each corresponding number and then press enter.");
+        for (int i = 0; i < weekDays.length; i++) {
+            System.out.print(i+1);
+            System.out.print(". ");
+            System.out.println(weekDays[i]);
+        }
+
+        String workDays = scanner.nextLine();
+        Set<Character> workDaysSet = new HashSet<>();
+
+        for (int i = 0; i < workDays.length(); i++) {
+            workDaysSet.add(workDays.charAt(i));
+        }
+
+        for (Character c : workDaysSet) {
+            int startHour;
+            int endHour;
+            int index = Character.getNumericValue(c) - 1;
+            //System.out.println(index);
+            System.out.print("Enter the schedule for ");
+            System.out.println(weekDays[index]);
+
+            System.out.println("Starting hour: ");
+            startHour = scanner.nextInt();
+            System.out.println("End hour: ");
+            endHour = scanner.nextInt();
+            scanner.nextLine();
+
+            schedule[index].setStartHour(startHour);
+            schedule[index].setEndHour(endHour);
+
+        }
+        return schedule;
+    }
+
     private void enterSchedule(Employee e) {
         WorkDay schedule[] = new WorkDay[5];
         for(int i = 0; i < 5; i++) {
@@ -338,6 +510,7 @@ public class EmployeeService {
 
     //Specializare doctor
     private void enterSpecialization(Employee e) {
+        ArrayList<Specialization> specializations = specializationRepository.getAllSpecializations();
         Doctor d = (Doctor) e;
         int option;
         System.out.println("1. Add a new specialization(s)");
