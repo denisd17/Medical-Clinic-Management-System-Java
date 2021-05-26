@@ -53,6 +53,9 @@ public class Audit {
                 case 4:
                     tableName = "APPOINTMENT";
                     break;
+                case 5:
+                    tableName = "MEDICAL RECORD";
+                    break;
             }
 
 
