@@ -1,5 +1,13 @@
 # Sistem de gestiune al unei clinici medicale
 
+## ENTITATI ETAPA 3
+Operatiile de tip CRUD se pot realiza pe urmatoarele entitati:
+1.Patient (din patient menu)
+2.Appointment (din patient menu)
+3.MedicalRecord (din medical record menu)
+4.Nurse (din employee menu)
+5.Doctor (din employee menu)
+
 ## Obiecte principale
 
 1. Person
