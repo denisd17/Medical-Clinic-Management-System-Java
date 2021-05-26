@@ -45,6 +45,8 @@ public class AppointmentRepository {
                 preparedStmtInsertAppService.executeUpdate();
             }
 
+            System.out.println("Created appointment with id = " + appId);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

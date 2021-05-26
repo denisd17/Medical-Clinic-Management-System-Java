@@ -239,7 +239,6 @@ public class PatientRepository {
         }
     }
 
-    //TODO: Update medical records before
     public void updatePatientCnp(String cnp, String newCnp) {
         String updateSqlPatient = "update patients " +
                 "set cnp = ? " +
